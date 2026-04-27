@@ -134,7 +134,7 @@ const fetchEvents = async () => {
 
             <div className="relative mt-10">
               <div className="absolute top-12 left-0 w-full h-1 bg-rose-200 z-0"></div>
-              <div className="flex overflow-x-auto pb-12 pt-4 snap-x hide-scrollbar relative z-10 gap-12 px-8">
+              <div className="flex overflow-x-auto pb-12 pt-4 snap-x relative z-10 gap-12 px-8">
                 {events.map((event) => (
                   <div 
                     key={event._id} 
