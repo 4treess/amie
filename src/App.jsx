@@ -7,6 +7,7 @@ const RelationshipTimeline = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [heartClicked, setHeartClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [newEvent, setNewEvent] = useState({
@@ -175,7 +176,7 @@ const fetchEvents = async () => {
                 <ReactMarkdown>{selectedEvent.story}</ReactMarkdown>
               </div>
               <div className="mt-12 pt-8 border-t border-rose-50 flex justify-center">
-                <Heart className="text-rose-100" size={32} onClick={className="fill-rose-100"} />
+                <Heart className={heartClicked ? "text-rose-100" : "text-rose-200 fill-rose-200"} size={32} onClick={setHeartClicked(!heartClicked)} />
               </div>
             </div>
           </div>
