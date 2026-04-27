@@ -10,7 +10,7 @@ const RelationshipTimeline = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [newEvent, setNewEvent] = useState({
-    date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
+    date: '', year: '', shortDesc: '', fullTitle: '', story: '', image: ''
   });
 
   // --- MONGODB CONFIG ---
@@ -24,7 +24,7 @@ const RelationshipTimeline = () => {
 const fetchEvents = async () => {
   setIsLoading(true);
   try {
-    const response = await fetch('https://amie-server-mdhz.onrender.com');
+    const response = await fetch('https://amie-server-mdhz.onrender.com/api/events');
     const data = await response.json();
     setEvents(data);
   } catch (err) {
@@ -63,7 +63,7 @@ const fetchEvents = async () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              message: `New memory: ${newEvent.shortDesc}`,
+              message: `${newEvent.shortDesc}`,
               content: base64,
             }),
           }
@@ -74,7 +74,7 @@ const fetchEvents = async () => {
       }
 
       // Phase B: MongoDB Save
-      const mongoResponse = await fetch('https://amie-server-mdhz.onrender.com', {
+      const mongoResponse = await fetch('https://amie-server-mdhz.onrender.com/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newEvent, image: finalImagePath }),
