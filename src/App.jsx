@@ -10,7 +10,7 @@ const RelationshipTimeline = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [newEvent, setNewEvent] = useState({
-    date: '', year: '', shortDesc: '', fullTitle: '', story: '', image: ''
+    date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
 
   // --- MONGODB CONFIG ---
@@ -175,7 +175,7 @@ const fetchEvents = async () => {
                 <ReactMarkdown>{selectedEvent.story}</ReactMarkdown>
               </div>
               <div className="mt-12 pt-8 border-t border-rose-50 flex justify-center">
-                <Heart className="text-rose-100" size={32} />
+                <Heart className="text-rose-100" size={32} onClick={className="fill-rose-100"} />
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ const fetchEvents = async () => {
       {showForm && (
         <div className="fixed inset-0 bg-rose-900/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <form onSubmit={handleAddEvent} className="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Milestone</h3>
+            <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
                 <input placeholder="Date (Oct 12)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
