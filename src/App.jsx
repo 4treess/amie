@@ -150,7 +150,7 @@ const fetchEvents = async () => {
                         <span className="text-[10px] text-rose-400 font-medium uppercase">{event.date.split(' ')[0]}</span>
                       </div>
                     </div>
-                    <p className="mt-4 text-center text-[11px] font-bold text-slate-500 w-24 leading-tight uppercase tracking-tighter">
+                    <p className="mt-4 text-center text-[11px] font-bold text-slate-500 w-24 leading-tight tracking-tighter">
                       {event.shortDesc}
                     </p>
                   </div>
