@@ -176,7 +176,7 @@ const fetchEvents = async () => {
                 <ReactMarkdown>{selectedEvent.story}</ReactMarkdown>
               </div>
               <div className="mt-12 pt-8 border-t border-rose-50 flex justify-center">
-                <Heart className={heartClicked ? "text-rose-100" : "text-rose-200 fill-rose-200"} size={32} onClick={() => setHeartClicked(!heartClicked)} />
+                <Heart className={heartClicked ? "text-rose-100 fill-rose-200" : "text-rose-200"} size={32} onClick={() => setHeartClicked(!heartClicked)} />
               </div>
             </div>
           </div>
