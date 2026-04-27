@@ -25,6 +25,14 @@ const fetchEvents = async () => {
   setIsLoading(true);
   try {
     const response = await fetch('https://amie-server-mdhz.onrender.com/api/events');
+    
+    // This part is the "truth teller"
+    if (!response.ok) {
+      const text = await response.text(); 
+      console.error("SERVER ERROR HTML:", text); // Look at this in your browser console!
+      return;
+    }
+
     const data = await response.json();
     setEvents(data);
   } catch (err) {
