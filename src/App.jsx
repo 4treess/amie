@@ -197,7 +197,7 @@ const fetchEvents = async () => {
             <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
-                <input placeholder="Date (Oct 12)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
+                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
                 <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" defaultValue="2026" onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
               </div>
               <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
