@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, ArrowLeft, NotebookPen, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Calendar, Heart, ArrowLeft, NotebookPen, EllipsisVertical, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
 
@@ -217,7 +217,11 @@ const fetchEvents = async () => {
               <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <ArrowLeft size={24} />
               </button>
-              <button onClick={() => {
+
+              <Menu as="div" className="relative">
+                <MenuButton className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500"><EllipsisVertical size={24} /></MenuButton>
+                <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50">
+                  <MenuItem onClick={() => {
                         setNewEvent({
                           date: selectedEvent.date,
                           year: selectedEvent.year,
@@ -227,11 +231,22 @@ const fetchEvents = async () => {
                           image: selectedEvent.image
                         });
                         setEditForm(true);
-                      }} 
-                      className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500"
-                    >
-                      <NotebookPen size={24} />
-                    </button>
+                      }} >
+                    {({ active }) => (
+                      <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
+                        <NotebookPen size={24} /> Edit Event
+                      </span>
+                    )}
+                  </MenuItem>
+                  <MenuItem onClick={} >
+                    {({ active }) => (
+                      <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
+                        <NotebookPen size={24} /> Delete Event
+                      </span>
+                    )}
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
             </div>
             <div className="p-8">
               <div className="flex items-center gap-2 text-rose-400 text-sm font-bold uppercase mb-2">
