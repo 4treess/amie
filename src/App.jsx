@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, ArrowLeft, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Calendar, Heart, ArrowLeft, NotebookPen, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
 
@@ -27,7 +27,6 @@ const fetchEvents = async () => {
   try {
     const response = await fetch('https://amie-server-mdhz.onrender.com/api/events');
     
-    // This part is the "truth teller"
     if (!response.ok) {
       const text = await response.text(); 
       console.error("SERVER ERROR HTML:", text); // Look at this in your browser console!
@@ -165,6 +164,9 @@ const fetchEvents = async () => {
               <img src={selectedEvent.image} alt="Memory" className="w-full h-full object-cover" />
               <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <ArrowLeft size={24} />
+              </button>
+              <button onClick={() => setSelectedEvent(null)} className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
+                <NotebookPen size={24} />
               </button>
             </div>
             <div className="p-8">
