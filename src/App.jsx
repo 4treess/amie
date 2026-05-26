@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, ArrowLeft, NotebookPen, EllipsisVertical, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Calendar, Heart, ArrowLeft, NotebookPen, EllipsisVertical, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
 
