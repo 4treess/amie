@@ -151,6 +151,31 @@ const fetchEvents = async () => {
     }
   };
 
+  // 5. HANDLE DELETE EVENT
+  const handleDeleteEvent = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this memory forever? 😢");
+    
+    if (!confirmDelete) return; // Stop if they click cancel
+
+    try {
+      const response = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert("Memory deleted. 💔");
+        setSelectedEvent(null); // Close the detail view panel
+        fetchEvents(); // Refresh the timeline list
+      } else {
+        const errorData = await response.json();
+        alert(`Delete failed: ${errorData.error}`);
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      alert("Could not reach the server to delete the memory.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-rose-50 font-sans text-slate-800">
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -253,15 +278,17 @@ const fetchEvents = async () => {
 
                   {/* DELETE OPTION */}
                   <MenuItem>
-                    {({ active }) => (
-                      <button 
-                        onClick={() => alert("Delete functionality coming next! 🛠️")} // Fixed empty object assignment
-                        className={`w-full flex items-center gap-2 px-4 py-3 text-xs text-left ${active ? 'bg-red-50 text-red-600' : 'text-slate-600'}`}
-                      >
-                        <Trash2 size={16} /> Delete Event 
-                      </button>
-                    )}
-                  </MenuItem>
+                  {({ active }) => (
+                    <button 
+                      onClick={() => handleDeleteEvent(selectedEvent._id)} 
+                      className={`w-full flex items-center gap-2 px-4 py-3 text-xs text-left ${
+                        active ? 'bg-red-50 text-red-600' : 'text-slate-600'
+                      }`}
+                    >
+                      <Trash2 size={16} /> Delete Event 
+                    </button>
+                  )}
+                </MenuItem>
                   
                 </MenuItems>
               </Menu>
