@@ -7,6 +7,7 @@ const RelationshipTimeline = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [editForm, setEditForm] = useState(false);
   const [heartClicked, setHeartClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -79,6 +80,7 @@ const fetchEvents = async () => {
         if (!ghResponse.ok) throw new Error("GitHub Upload Failed");
         // Using the Raw URL so it works instantly without waiting for a Vercel build
         finalImagePath = `https://raw.githubusercontent.com/4treess/amie/main/public/images/${fileName}`;
+        setSelectedFile(null);
       }
 
       // Phase B: MongoDB Save
@@ -91,6 +93,55 @@ const fetchEvents = async () => {
       if (mongoResponse.ok) {
         alert("Memory Saved! ❤️");
         setShowForm(false);
+        fetchEvents(); // Refresh the list
+      }
+    } catch (err) {
+      console.error("Error saving event:", err);
+      alert("Check console for error details.");
+    }
+  };
+
+    // 4. HANDLE Edit (GITHUB THEN MONGO)
+  const handleEditEvent = async (e) => {
+    e.preventDefault();
+    try {
+      let finalImagePath = selectedEvent.image;
+
+      // Phase A: GitHub Upload
+      if (selectedFile) {
+        const base64 = await toBase64(selectedFile);
+        const fileName = `memory-${Date.now()}.jpg`;
+        const ghResponse = await fetch(
+          `https://api.github.com/repos/4treess/amie/contents/public/images/${fileName}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: `${newEvent.shortDesc}`,
+              content: base64,
+            }),
+          }
+        );
+        if (!ghResponse.ok) throw new Error("GitHub Upload Failed");
+        // Using the Raw URL so it works instantly without waiting for a Vercel build
+        finalImagePath = `https://raw.githubusercontent.com/4treess/amie/main/public/images/${fileName}`;
+        setSelectedFile(null);
+      }
+
+      // Phase B: MongoDB Save
+      const mongoResponse = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${selectedEvent.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newEvent, image: finalImagePath }),
+      });
+
+      if (mongoResponse.ok) {
+        alert("Memory Updated! ❤️");
+        setEditForm(false);
+        setSelectedEvent(null);
         fetchEvents(); // Refresh the list
       }
     } catch (err) {
@@ -215,6 +266,33 @@ const fetchEvents = async () => {
             <div className="mt-8 flex gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 text-slate-400 font-bold">Cancel</button>
               <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500">Save Memory</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {editForm && (
+        <div className="fixed inset-0 bg-rose-900/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <form onSubmit={handleEditEvent} className="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none"  defaultValue={selectedEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
+                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.year} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
+              </div>
+              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.shortDesc} onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
+              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.fullTitle} onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
+              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
+              <div className="relative">
+                <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
+                <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors">
+                  <ImageIcon size={18} /> {selectedFile ? selectedFile.name : "Upload Photo"}
+                </label>
+              </div>
+            </div>
+            <div className="mt-8 flex gap-3">
+              <button type="button" onClick={() => setEditForm(false)} className="flex-1 py-3 text-slate-400 font-bold">Cancel</button>
+              <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500">Save Changes</button>
             </div>
           </form>
         </div>
