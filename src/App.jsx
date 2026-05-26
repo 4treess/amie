@@ -142,6 +142,7 @@ const fetchEvents = async () => {
         alert("Memory Updated! ❤️");
         setEditForm(false);
         setSelectedEvent(null);
+        setNewEvent({ date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: '' }); 
         fetchEvents(); // Refresh the list
       }
     } catch (err) {
@@ -216,9 +217,21 @@ const fetchEvents = async () => {
               <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <ArrowLeft size={24} />
               </button>
-              <button onClick={() => setEditForm(true)} className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
-                <NotebookPen size={24} />
-              </button>
+              <button onClick={() => {
+                        setNewEvent({
+                          date: selectedEvent.date,
+                          year: selectedEvent.year,
+                          shortDesc: selectedEvent.shortDesc,
+                          fullTitle: selectedEvent.fullTitle,
+                          story: selectedEvent.story,
+                          image: selectedEvent.image
+                        });
+                        setEditForm(true);
+                      }} 
+                      className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500"
+                    >
+                      <NotebookPen size={24} />
+                    </button>
             </div>
             <div className="p-8">
               <div className="flex items-center gap-2 text-rose-400 text-sm font-bold uppercase mb-2">
@@ -277,12 +290,12 @@ const fetchEvents = async () => {
             <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
-                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none"  defaultValue={selectedEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
-                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.year} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
+                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none"  value={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
+                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.year} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
               </div>
-              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.shortDesc} onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
-              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.fullTitle} onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
-              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" defaultValue={selectedEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
+              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.shortDesc} onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
+              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.fullTitle} onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
+              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
               <div className="relative">
                 <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors">
