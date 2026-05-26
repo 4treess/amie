@@ -238,7 +238,7 @@ const fetchEvents = async () => {
                       </span>
                     )}
                   </MenuItem>
-                  <MenuItem onClick={} >
+                  <MenuItem>
                     {({ active }) => (
                       <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
                         <NotebookPen size={24} /> Delete Event
