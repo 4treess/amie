@@ -287,7 +287,7 @@ const fetchEvents = async () => {
       {editForm && (
         <div className="fixed inset-0 bg-rose-900/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <form onSubmit={handleEditEvent} className="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
+            <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">Edit Existing Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
                 <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none"  value={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
