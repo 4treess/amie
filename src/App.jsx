@@ -132,7 +132,7 @@ const fetchEvents = async () => {
       }
 
       // Phase B: MongoDB Save
-      const mongoResponse = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${selectedEvent.id}`, {
+      const mongoResponse = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${selectedEvent._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newEvent, image: finalImagePath }),
