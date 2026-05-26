@@ -214,37 +214,55 @@ const fetchEvents = async () => {
           <div className="animate-slide-up bg-white rounded-3xl shadow-xl overflow-hidden min-h-[70vh]">
             <div className="relative h-64 bg-slate-100">
               <img src={selectedEvent.image} alt="Memory" className="w-full h-full object-cover" />
+              
+              {/* Left Side Back Button */}
               <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <ArrowLeft size={24} />
               </button>
 
-              <Menu as="ul" className="absolute">
-                <MenuButton className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500"><EllipsisVertical size={24} /></MenuButton>
-                <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50">
-                  <MenuItem onClick={() => {
-                        setNewEvent({
-                          date: selectedEvent.date,
-                          year: selectedEvent.year,
-                          shortDesc: selectedEvent.shortDesc,
-                          fullTitle: selectedEvent.fullTitle,
-                          story: selectedEvent.story,
-                          image: selectedEvent.image
-                        });
-                        setEditForm(true);
-                      }} >
-                    {({ active }) => (
-                      <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
-                        <NotebookPen size={24} /> Edit Event
-                      </span>
-                    )}
-                  </MenuItem>
+              {/* Right Side Menu - Move the absolute positioning to the Menu element itself! */}
+              <Menu as="div" className="absolute top-4 right-4 z-50">
+                <MenuButton className="bg-white/90 p-2 rounded-full shadow-md text-rose-500 block hover:bg-white transition-colors">
+                  <EllipsisVertical size={24} />
+                </MenuButton>
+                
+                {/* Aligning the options panel flush to the right edge of the button */}
+                <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden">
+                  
+                  {/* EDIT OPTION */}
                   <MenuItem>
                     {({ active }) => (
-                      <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
-                        <NotebookPen size={24} /> Delete Event
-                      </span>
+                      <button 
+                        onClick={() => {
+                          setNewEvent({
+                            date: selectedEvent.date,
+                            year: selectedEvent.year,
+                            shortDesc: selectedEvent.shortDesc,
+                            fullTitle: selectedEvent.fullTitle,
+                            story: selectedEvent.story,
+                            image: selectedEvent.image
+                          });
+                          setEditForm(true);
+                        }}
+                        className={`w-full flex items-center gap-2 px-4 py-3 text-xs text-left ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                      >
+                        <NotebookPen size={16} /> Edit Event
+                      </button>
                     )}
                   </MenuItem>
+
+                  {/* DELETE OPTION */}
+                  <MenuItem>
+                    {({ active }) => (
+                      <button 
+                        onClick={() => alert("Delete functionality coming next! 🛠️")} // Fixed empty object assignment
+                        className={`w-full flex items-center gap-2 px-4 py-3 text-xs text-left ${active ? 'bg-red-50 text-red-600' : 'text-slate-600'}`}
+                      >
+                        <Trash2 size={16} /> Delete Event 
+                      </button>
+                    )}
+                  </MenuItem>
+                  
                 </MenuItems>
               </Menu>
             </div>
