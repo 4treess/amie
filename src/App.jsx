@@ -218,7 +218,7 @@ const fetchEvents = async () => {
                 <ArrowLeft size={24} />
               </button>
 
-              <Menu as="div" className="relative">
+              <Menu as="div" className="absolute">
                 <MenuButton className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500"><EllipsisVertical size={24} /></MenuButton>
                 <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50">
                   <MenuItem onClick={() => {
