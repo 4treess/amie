@@ -216,7 +216,7 @@ const fetchEvents = async () => {
               <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <ArrowLeft size={24} />
               </button>
-              <button onClick={() => setSelectedEvent(null)} className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
+              <button onClick={() => setEditForm(true)} className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
                 <NotebookPen size={24} />
               </button>
             </div>
