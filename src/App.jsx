@@ -314,7 +314,7 @@ const fetchEvents = async () => {
         )}
       </main>
 
-      {!showForm && (
+      {!selectedEvent && (
         <div className="flex justify-center pb-12">
           <button onClick={() => setSelectedEvent(null)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all">
             <span className="text-xl">&lt;-</span> Go Back to the Timeline
