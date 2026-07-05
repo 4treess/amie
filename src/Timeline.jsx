@@ -102,14 +102,14 @@ const RelationshipTimeline = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex justify-center pb-12">
+              {/* <div className="flex justify-center pb-12">
                 <button 
                   onClick={() => setShowForm(true)}
                   className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all active:scale-95"
                 >
                   <span className="text-xl">+</span> Add New Memory
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         ) : (
