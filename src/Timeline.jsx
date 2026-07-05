@@ -102,7 +102,6 @@ const RelationshipTimeline = () => {
                   </div>
                 ))}
               </div>
-            </div>
               <div className="flex justify-center pb-12">
                 <button 
                   onClick={() => setShowForm(true)}
@@ -112,6 +111,7 @@ const RelationshipTimeline = () => {
                 </button>
               </div>
             </div>
+          </div>
         ) : (
           /* Blog Style Detail View */
           <div className="animate-slide-up bg-white rounded-3xl shadow-xl overflow-hidden min-h-[70vh]">
