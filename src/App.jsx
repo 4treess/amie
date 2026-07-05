@@ -314,13 +314,13 @@ const fetchEvents = async () => {
         )}
       </main>
 
-      {/* {!showForm && (
+      {!showForm && (
         <div className="flex justify-center pb-12">
-          <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all">
-            <span className="text-xl">+</span> Add New Memory
+          <button onClick={() => setSelectedEvent(null)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all">
+            <span className="text-xl">&lt;-</span> Go Back to the Timeline
           </button>
         </div>
-      )} */}
+      )}
 
       {showForm && (
         <div className="fixed inset-0 bg-rose-900/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
