@@ -12,7 +12,6 @@ const RelationshipTimeline = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [sortOrder, setSortOrder] = useState(-1);
-  const [sortText, setSortText] = useState("Events are in reverse chronological order")
   const [newEvent, setNewEvent] = useState({
     date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
@@ -45,7 +44,7 @@ const fetchEvents = async () => {
   }
 };
 
-  useEffect(() => { fetchEvents(); }, []);
+  useEffect(() => { fetchEvents(); }, [sortOrder]);
 
   // 2. HELPER: CONVERT FILE TO BASE64
   const toBase64 = (file) => new Promise((resolve, reject) => {
@@ -180,25 +179,7 @@ const fetchEvents = async () => {
 
   // 6. HANDLE SORT ORDER
   const handleSortOrder = async () => {
-    setSortOrder(sortOrder * -1);
-    fetchEvents();
-
-
-    switch(sortOrder){
-      case 1:
-        setSortText("Events are in chronological order");
-        break;
-      case -1:
-        setSortText("Events are in reverse chronological order");
-        break;
-      default:
-        setSortText("Events are in reverse chronological order");
-        break;
-    }
-
-    // return(
-    //   <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
-    // )
+    setSortOrder((sortOrder) => sortOrder * -1);
   } 
 
   return (
@@ -231,7 +212,9 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
+              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortOrder === 1 
+      ? "Events are in chronological order (Oldest First)" 
+      : "Events are in reverse chronological order (Newest First)"}</a>
             </header>
 
             <div className="relative mt-10">
