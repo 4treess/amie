@@ -4,7 +4,6 @@ import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
 
   function sortOrderComponent() {
-    const [sortOrder, setSortOrder] = useState(-1);
     const [sortText, setSortText] = useState("Events are in reverse chronological order")
     
     const handleClick = () => {
@@ -34,6 +33,7 @@ const RelationshipTimeline = () => {
   const [heartClicked, setHeartClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [sortOrder, setSortOrder] = useState(-1);
   const [newEvent, setNewEvent] = useState({
     date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
