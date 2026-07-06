@@ -248,7 +248,7 @@ const fetchEvents = async () => {
               </div>
             </div>
             <div className="flex justify-center pb-12">
-              <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all">
+              <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all hover:scale-105">
                 <span className="text-xl">+</span> Add New Memory
               </button>
             </div>
@@ -259,13 +259,13 @@ const fetchEvents = async () => {
               <img src={selectedEvent.image} alt="Memory" className="w-full h-full object-cover" />
               
               {/* Left Side Back Button */}
-              <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500">
+              <button onClick={() => setSelectedEvent(null)} className="absolute top-4 left-4 bg-white/90 p-2 rounded-full shadow-md text-rose-500 hover:scale-105">
                 <ArrowLeft size={24} />
               </button>
 
               {/* Right Side Menu - Move the absolute positioning to the Menu element itself! */}
               <Menu as="div" className="absolute top-4 right-4 z-50">
-                <MenuButton className="bg-white/90 p-2 rounded-full shadow-md text-rose-500 block hover:bg-white transition-colors">
+                <MenuButton className="bg-white/90 p-2 rounded-full shadow-md text-rose-500 block hover:bg-white transition-colors hover:scale-105">
                   <EllipsisVertical size={24} />
                 </MenuButton>
                 
@@ -329,7 +329,7 @@ const fetchEvents = async () => {
 
       {selectedEvent && (
         <div className="flex justify-center pb-12">
-          <button onClick={() => setSelectedEvent(null)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all">
+          <button onClick={() => setSelectedEvent(null)} className="flex items-center gap-2 bg-white text-rose-400 px-6 py-3 rounded-full shadow-md border border-rose-100 font-bold hover:bg-rose-50 transition-all hover:scale-105">
             <span className="text-xl">&lt;-</span> Go Back to the Timeline
           </button>
         </div>
@@ -355,8 +355,8 @@ const fetchEvents = async () => {
               </div>
             </div>
             <div className="mt-8 flex gap-3">
-              <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 text-slate-400 font-bold">Cancel</button>
-              <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500">Save Memory</button>
+              <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-3 text-slate-400 font-bold hover:scale-105">Cancel</button>
+              <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500 hover:scale-105">Save Memory</button>
             </div>
           </form>
         </div>
@@ -382,8 +382,8 @@ const fetchEvents = async () => {
               </div>
             </div>
             <div className="mt-8 flex gap-3">
-              <button type="button" onClick={() => setEditForm(false)} className="flex-1 py-3 text-slate-400 font-bold">Cancel</button>
-              <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500">Save Changes</button>
+              <button type="button" onClick={() => setEditForm(false)} className="flex-1 py-3 text-slate-400 font-bold hover:scale-105">Cancel</button>
+              <button type="submit" className="flex-1 py-3 bg-rose-400 text-white rounded-xl font-bold shadow-lg shadow-rose-200 hover:bg-rose-500 hover:scale-105">Save Changes</button>
             </div>
           </form>
         </div>
