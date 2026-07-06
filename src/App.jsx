@@ -12,6 +12,7 @@ const RelationshipTimeline = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [sortOrder, setSortOrder] = useState(-1);
+  const [sortText, setSortText] = useState("Events are in reverse chronological order")
   const [newEvent, setNewEvent] = useState({
     date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
@@ -178,21 +179,23 @@ const fetchEvents = async () => {
   };
 
   // 6. HANDLE SORT ORDER
-  const handleSortOrder = async (e) => {
+  const handleSortOrder = async () => {
     setSortOrder(sortOrder * -1);
     fetchEvents();
 
-    const displayMessage = () => {
-      switch(sortOrder){
-        case 1:
-          return "Events are in chronological order";
-        case -1:
-          return "Events are in reverse chronological order";
-        default:
-          return "Events are in reverse chronological order";
-      }
+
+    switch(sortOrder){
+      case 1:
+        setSortText = "Events are in chronological order";
+      case -1:
+        setSortText = "Events are in reverse chronological order";
+      default:
+        setSortText = "Events are in reverse chronological order";
     }
-    e.target.textContent = displayMessage();
+
+    return(
+      <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
+    )
   } 
 
   return (
@@ -225,7 +228,7 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>"Events are in reverse chronological order"</a>
+              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>Events are in reverse chronological order</a>
             </header>
 
             <div className="relative mt-10">
