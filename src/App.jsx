@@ -13,7 +13,7 @@ const RelationshipTimeline = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [sortOrder, setSortOrder] = useState(-1);
   const [newEvent, setNewEvent] = useState({
-    date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
+    date: '', year: new Date().getFullYear().toString(), shortDesc: '', fullTitle: '', story: '', image: ''
   });
 
   // --- MONGODB CONFIG ---
@@ -342,7 +342,7 @@ const fetchEvents = async () => {
             <div className="space-y-4">
               <div className="flex gap-2">
                 <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-100 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
-                <input placeholder="Year" className="w-16 p-3 rounded-xl bg-rose-100 outline-none" defaultValue="2026" onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
+                <input placeholder="Year" className="w-16 p-3 rounded-xl bg-rose-100 outline-none" defaultValue={new Date().getFullYear().toString()} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
               </div>
               <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-100 outline-none" onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
               <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-100 outline-none" onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
