@@ -3,6 +3,29 @@ import { Calendar, Heart, ArrowLeft, NotebookPen, EllipsisVertical, Image as Ima
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
 
+  function sortOrderComponent() {
+    const [sortOrder, setSortOrder] = useState(-1);
+    const [sortText, setSortText] = useState("Events are in reverse chronological order")
+    
+    const handleClick = () => {
+      setSortOrder(sortOrder * -1);
+      fetchEvents();
+
+      switch(sortOrder){
+        case 1:
+          setSortText("Events are in chronological order");
+        case -1:
+          setSortText("Events are in reverse chronological order");
+        default:
+          setSortText("Events are in reverse chronological order");
+      }
+    }
+
+    return(
+      <a className="text-slate-400 mt-2" onClick={() => handleClick()}>{sortText}</a>
+    )
+  } 
+
 const RelationshipTimeline = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -11,8 +34,6 @@ const RelationshipTimeline = () => {
   const [heartClicked, setHeartClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [sortOrder, setSortOrder] = useState(-1);
-  const [sortText, setSortText] = useState("Events are in reverse chronological order")
   const [newEvent, setNewEvent] = useState({
     date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
@@ -178,26 +199,6 @@ const fetchEvents = async () => {
     }
   };
 
-  // 6. HANDLE SORT ORDER
-  const handleSortOrder = async () => {
-    setSortOrder(sortOrder * -1);
-    fetchEvents();
-
-
-    switch(sortOrder){
-      case 1:
-        setSortText("Events are in chronological order");
-      case -1:
-        setSortText("Events are in reverse chronological order");
-      default:
-        setSortText("Events are in reverse chronological order");
-    }
-
-    // return(
-    //   <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
-    // )
-  } 
-
   return (
     <div className="min-h-screen bg-rose-50 font-sans text-slate-800">
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -228,7 +229,7 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
+              <sortOrderComponent/>
             </header>
 
             <div className="relative mt-10">
