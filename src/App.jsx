@@ -178,7 +178,7 @@ const fetchEvents = async () => {
   };
 
   // 6. HANDLE SORT ORDER
-  const handleSortOrder = async () => {
+  const handleSortOrder = async (e) => {
     setSortOrder(sortOrder * -1);
     fetchEvents();
 
@@ -192,10 +192,7 @@ const fetchEvents = async () => {
           return "Events are in reverse chronological order";
       }
     }
-
-    return (
-      <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{displayMessage()}</a>
-    )
+    e.target.textContent = displayMessage();
   } 
 
   return (
