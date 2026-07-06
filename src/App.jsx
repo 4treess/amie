@@ -186,11 +186,11 @@ const fetchEvents = async () => {
 
     switch(sortOrder){
       case 1:
-        setSortText = "Events are in chronological order";
+        setSortText("Events are in chronological order");
       case -1:
-        setSortText = "Events are in reverse chronological order";
+        setSortText("Events are in reverse chronological order");
       default:
-        setSortText = "Events are in reverse chronological order";
+        setSortText("Events are in reverse chronological order");
     }
 
     return(
