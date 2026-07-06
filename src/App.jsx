@@ -11,6 +11,7 @@ const RelationshipTimeline = () => {
   const [heartClicked, setHeartClicked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [sortOrder, setSortOrder] = useState(-1);
   const [newEvent, setNewEvent] = useState({
     date: '', year: '2026', shortDesc: '', fullTitle: '', story: '', image: ''
   });
@@ -26,7 +27,7 @@ const RelationshipTimeline = () => {
 const fetchEvents = async () => {
   setIsLoading(true);
   try {
-    const response = await fetch('https://amie-server-mdhz.onrender.com/api/events');
+    const response = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${sortOrder}`);
     
     if (!response.ok) {
       const text = await response.text(); 
@@ -176,6 +177,27 @@ const fetchEvents = async () => {
     }
   };
 
+  // 6. HANDLE SORT ORDER
+  const handleSortOrder = async () => {
+    setSortOrder(sortOrder * -1);
+    fetchEvents();
+
+    const displayMessage = () => {
+      switch(sortOrder){
+        case 1:
+          return "Events are in chronological order";
+        case -1:
+          return "Events are in reverse chronological order";
+        default:
+          return "Events are in reverse chronological order";
+      }
+    }
+
+    return (
+      <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{displayMessage()}</a>
+    )
+  } 
+
   return (
     <div className="min-h-screen bg-rose-50 font-sans text-slate-800">
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
@@ -206,7 +228,7 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <p className="text-slate-400 mt-2">Events are in reverse chronological order</p>
+              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>Events are in reverse chronological order</a>
             </header>
 
             <div className="relative mt-10">
