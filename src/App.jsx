@@ -212,9 +212,14 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortOrder === 1 
-      ? "Events are in chronological order (Oldest First)" 
-      : "Events are in reverse chronological order (Newest First)"}</a>
+              <button 
+                onClick={handleSortOrder} 
+                className="text-slate-400 hover:text-rose-400 transition-colors mt-2 text-sm underline decoration-dotted"
+              >
+                {sortOrder === 1 
+                  ? "Events are in chronological order (Oldest First) ⏳" 
+                  : "Events are in reverse chronological order (Newest First) ⌛"}
+              </button>
             </header>
 
             <div className="relative mt-10">
