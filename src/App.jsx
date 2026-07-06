@@ -196,9 +196,9 @@ const fetchEvents = async () => {
         break;
     }
 
-    return(
-      <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
-    )
+    // return(
+    //   <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>{sortText}</a>
+    // )
   } 
 
   return (
