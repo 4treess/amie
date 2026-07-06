@@ -228,7 +228,7 @@ const fetchEvents = async () => {
           <div className="animate-fade-in">
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
-              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}>Events are in reverse chronological order</a>
+              <a className="text-slate-400 mt-2" onClick={() => handleSortOrder()}></a>
             </header>
 
             <div className="relative mt-10">
