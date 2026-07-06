@@ -213,13 +213,13 @@ const fetchEvents = async () => {
             <header className="py-8 text-center">
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
               <button 
-                onClick={handleSortOrder} 
-                className="text-slate-400 hover:text-rose-400 transition-colors mt-2 text-sm underline decoration-dotted"
-              >
-                {sortOrder === 1 
-                  ? "Events are in chronological order (Oldest First) ⏳" 
-                  : "Events are in reverse chronological order (Newest First) ⌛"}
-              </button>
+              onClick={handleSortOrder} 
+              className="text-slate-400 hover:text-rose-400 transition-colors mt-2 text-sm"
+            >
+              {sortOrder === 1 
+                ? "Events are in chronological order (Oldest First)" 
+                : "Events are in reverse chronological order (Newest First)"}
+            </button>
             </header>
 
             <div className="relative mt-10">
