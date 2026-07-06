@@ -194,7 +194,7 @@ const fetchEvents = async () => {
             <MenuItem>
               {({ active }) => (
                 <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
-                  Future Amieverseries Coming Soon!
+                  Coming Soon on Future Amieverseries!
                 </span>
               )}
             </MenuItem>
@@ -341,12 +341,12 @@ const fetchEvents = async () => {
             <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">New Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
-                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
-                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" defaultValue="2026" onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
+                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-150 outline-none" onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
+                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-150 outline-none" defaultValue="2026" onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
               </div>
-              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
-              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
-              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
+              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-150 outline-none" onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
+              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-150 outline-none" onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
+              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-150 outline-none" onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
               <div className="relative">
                 <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors hover:scale-105">
@@ -368,12 +368,12 @@ const fetchEvents = async () => {
             <h3 className="text-2xl font-serif text-slate-700 mb-6 text-center">Edit Existing Memory</h3>
             <div className="space-y-4">
               <div className="flex gap-2">
-                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-50 outline-none"  value={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
-                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.year} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
+                <input placeholder="Date (February 1)" className="flex-1 p-3 rounded-xl bg-rose-150 outline-none"  value={newEvent.date} onChange={(e) => setNewEvent({...newEvent, date: e.target.value})} required />
+                <input placeholder="Year" className="w-24 p-3 rounded-xl bg-rose-150 outline-none" value={newEvent.year} onChange={(e) => setNewEvent({...newEvent, year: e.target.value})} required />
               </div>
-              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.shortDesc} onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
-              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.fullTitle} onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
-              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
+              <input placeholder="Short Description" className="w-full p-3 rounded-xl bg-rose-150 outline-none" value={newEvent.shortDesc} onChange={(e) => setNewEvent({...newEvent, shortDesc: e.target.value})} required />
+              <input placeholder="Full Title" className="w-full p-3 rounded-xl bg-rose-150 outline-none" value={newEvent.fullTitle} onChange={(e) => setNewEvent({...newEvent, fullTitle: e.target.value})} required />
+              <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-150 outline-none" value={newEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
               <div className="relative">
                 <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors hover:scale-105">
