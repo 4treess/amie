@@ -189,8 +189,8 @@ const fetchEvents = async () => {
           <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
         </h1>
         <Menu as="div" className="relative">
-          <MenuButton className="text-rose-500 border-b-2 border-rose-500">Timeline</MenuButton>
-          <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50">
+          <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">Timeline</MenuButton>
+          <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
             <MenuItem>
               {({ active }) => (
                 <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
@@ -214,7 +214,7 @@ const fetchEvents = async () => {
               <h2 className="text-3xl font-serif text-slate-700 italic">Our Shared Memories</h2>
               <button 
               onClick={handleSortOrder} 
-              className="text-slate-400 hover:text-rose-400 transition-colors mt-2 text-sm"
+              className="text-slate-400 hover:text-rose-400 transition-colors mt-2 text-sm hover:scale-105"
             >
               {sortOrder === 1 
                 ? "Events are in chronological order (Oldest First)" 
@@ -270,7 +270,7 @@ const fetchEvents = async () => {
                 </MenuButton>
                 
                 {/* Aligning the options panel flush to the right edge of the button */}
-                <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden">
+                <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden hover:scale-105">
                   
                   {/* EDIT OPTION */}
                   <MenuItem>
@@ -349,7 +349,7 @@ const fetchEvents = async () => {
               <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
               <div className="relative">
                 <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
-                <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors">
+                <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors hover:scale-105">
                   <ImageIcon size={18} /> {selectedFile ? selectedFile.name : "Upload Photo"}
                 </label>
               </div>
@@ -376,7 +376,7 @@ const fetchEvents = async () => {
               <textarea placeholder="The Story..." rows="4" className="w-full p-3 rounded-xl bg-rose-50 outline-none" value={newEvent.story} onChange={(e) => setNewEvent({...newEvent, story: e.target.value})} required />
               <div className="relative">
                 <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} className="hidden" id="file-upload" />
-                <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors">
+                <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-rose-100 text-rose-600 cursor-pointer hover:bg-rose-200 transition-colors hover:scale-105">
                   <ImageIcon size={18} /> {selectedFile ? selectedFile.name : "Upload Photo"}
                 </label>
               </div>
