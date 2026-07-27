@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Heart, ArrowLeft, NotebookPen, EllipsisVertical, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
 
 const RelationshipTimeline = () => {
   const [events, setEvents] = useState([]);
@@ -191,6 +192,16 @@ const fetchEvents = async () => {
         <Menu as="div" className="relative">
           <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">Timeline</MenuButton>
           <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
+            <MenuItem>
+                {({ active }) => (
+                  <Link 
+                    to="/mines" 
+                    className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                  >
+                    💣 Play Mines
+                  </Link>
+                )}
+            </MenuItem>
             <MenuItem>
               {({ active }) => (
                 <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
