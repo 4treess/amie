@@ -37,7 +37,7 @@ const Mines = () => {
       {/* HEADER & CONTROLS */}
       <div className="text-center mb-6">
         <h2 className="text-2xl font-serif text-slate-800 flex items-center justify-center gap-2">
-          <Bomb className="text-rose-500" size={24} /> Mine Sweeper
+          <Bomb className="text-rose-500" size={24} /> Mines!
         </h2>
         <p className="text-xs text-slate-400 mt-1">Configure your board and test your luck!</p>
       </div>
