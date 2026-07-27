@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css' // Ensure this exists for your Tailwind or custom CSS
 import RelationshipTimeline from './App.jsx'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Mines from './Mines';
+import Mines from './Mines.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
