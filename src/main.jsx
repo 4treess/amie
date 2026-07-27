@@ -5,11 +5,11 @@ import RelationshipTimeline from './App.jsx'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Mines from './Mines.jsx';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RelationshipTimeline />
-  </React.StrictMode>,
-)
+// ReactDOM.createRoot(document.getElementById('root')).render(
+//   <React.StrictMode>
+//     <RelationshipTimeline />
+//   </React.StrictMode>,
+// )
 
 
 
