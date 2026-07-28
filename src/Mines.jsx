@@ -10,8 +10,8 @@ const Mines = () => {
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5);
+  const [rows, setRows] = useState(2);
+  const [cols, setCols] = useState(2);
   const [minesCount, setMinesCount] = useState(4);
 
   // 2. BOARD STATE (Dummy visual layout to start)
@@ -93,6 +93,7 @@ const Mines = () => {
 
         randomizeMines(tempBoard, validRows, validCols);
         setBoard(tempBoard)
+        console.log(tempBoard)
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
