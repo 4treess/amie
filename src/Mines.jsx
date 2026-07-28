@@ -44,10 +44,10 @@ const Mines = () => {
             visible: false,
         });
 
-        const randomizeMines = (board, rows, cols) => {
+        const randomizeMines = (board, rows, cols, mines) => {
             let len = rows*cols;
             let listOfVals = Array.from({length: len}, (_, index) => index);
-            for(let i = 0; i < minesCount; i++){
+            for(let i = 0; i < mines; i++){
                 let index = Math.floor(Math.random() * (len));
                 let number = listOfVals[index]
 
