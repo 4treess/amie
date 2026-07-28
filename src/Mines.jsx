@@ -28,7 +28,7 @@ const Mines = () => {
   const handleStartNewGame = () => {
     console.log(`Starting new game with ${rows}x${cols} grid and ${minesCount} mines`);
         
-
+        // Prevents the data from exceeding its bounds, and prevents fractional amounts
         const sanitizeData = (data, min) => {
             if(typeof(data) === "number"){
                 if(data > min){
@@ -81,7 +81,7 @@ const Mines = () => {
             tempBoard.push(row);
         }
 
-        randomizeMines(tempBoard, mines);
+        randomizeMines(tempBoard);
         setBoard(tempBoard)
     // TODO: Call your board generation logic here and set setBoard(...)
   };
