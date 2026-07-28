@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham} from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft} from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 
@@ -23,10 +23,10 @@ const Mines = () => {
   const [board, setBoard] = useState([
     [
       { row: 0, col: 0, isMine: false, visible: true },
-      { row: 0, col: 1, isMine: false, visible: false },
+      { row: 0, col: 1, isMine: false, visible: true },
     ],
     [
-      { row: 1, col: 0, isMine: false, visible: false },
+      { row: 1, col: 0, isMine: false, visible: true },
       { row: 1, col: 1, isMine: true, visible: true },
     ]
   ]);
@@ -218,7 +218,7 @@ const Mines = () => {
         </div>
 
         {/* INPUT CONTROLS ROW */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
+        {gameStatus === "Lobby" && <div className="grid grid-cols-3 gap-2 mb-6">
           <div>
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rows</label>
             <input 
@@ -250,7 +250,7 @@ const Mines = () => {
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
           </div>
-          {gameStatus === "Lobby" && <div>
+          <div>
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rounds</label>
             <input 
               type="number" 
@@ -260,8 +260,16 @@ const Mines = () => {
               onChange={(e) => setRoundsCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
-          </div>}
-        </div>
+          </div>
+        </div>}
+
+        {/* LOBBY BUTTON */}
+        <button 
+          onClick={setGameStatus("Lobby")}
+          className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
+        >
+          <CircleArrowLeft size={18} /> Return To Lobby
+        </button>
 
         {/* RESET / START BUTTON */}
         <button 
@@ -285,7 +293,7 @@ const Mines = () => {
                   className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
                     cell.visible 
                       ? cell.isMine 
-                        ? 'bg-white' 
+                        ? 'bg-red-100' 
                         : 'bg-white text-slate-600'
                       : 'bg-rose-300 hover:bg-rose-400 text-transparent'
                   }`}
