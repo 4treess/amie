@@ -175,7 +175,7 @@ const Mines = () => {
         setGameStatus("Victory");
         revealBoard();
       }
-      setPoints(points + minesCount/(turnsLeft))
+      setPoints(points + 100*minesCount/(turnsLeft))
     }
 
     if(board[rowIndex][colIndex].visible === false){
