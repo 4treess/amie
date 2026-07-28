@@ -12,9 +12,11 @@ const Mines = () => {
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
-  const [rows, setRows] = useState(2);
-  const [cols, setCols] = useState(2);
-  const [minesCount, setMinesCount] = useState(1);
+  const [rows, setRows] = useState(5);
+  const [cols, setCols] = useState(5);
+  const [minesCount, setMinesCount] = useState(4);
+  const [roundsCount, setRoundsCount] = useState(0);
+  const [currentRound, setCurrentRound] = useState(0);
 
   // 2. BOARD STATE (Dummy visual layout to start)
   // In React, components re-render based on state updates rather than pure JS functions returning values.
@@ -239,6 +241,17 @@ const Mines = () => {
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
           </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rounds</label>
+            <input 
+              type="number" 
+              min="0"
+              max="10"
+              value={roundsCount} 
+              onChange={(e) => setMinesCount(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
+            />
+          </div>
         </div>
 
         {/* RESET / START BUTTON */}
@@ -279,19 +292,25 @@ const Mines = () => {
         {/* SCORE / STATUS DISPLAY */}
         <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100">
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            <Trophy size={16} className="text-amber-400" /> Status:
+            Status:
           </div>
           <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
             {gameStatus}
           </span>
+          <div className={`${roundsCount === 0 ? "absolute text-transparent" : "flex items-center gap-2 text-xs text-slate-500 font-medium" }`}>
+            Round:
+          </div>
+          <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
+            {currentRound} / {roundsCount}
+          </span>
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            <Trophy size={16} className="text-amber-400" /> Moves:
+            Moves:
           </div>
           <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
             {clicks}
           </span>
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            <Trophy size={16} className="text-amber-400" /> Points:
+            Points:
           </div>
           <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
             {Math.round(points*100)/100}
