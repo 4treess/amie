@@ -19,7 +19,6 @@ const Mines = () => {
   const [currentRound, setCurrentRound] = useState(1);
 
   // 2. BOARD STATE (Dummy visual layout to start)
-  // In React, components re-render based on state updates rather than pure JS functions returning values.
   const [board, setBoard] = useState([
     [
       { row: 0, col: 0, isMine: false, visible: true },
@@ -30,6 +29,21 @@ const Mines = () => {
       { row: 1, col: 1, isMine: true, visible: true },
     ]
   ]);
+
+  const revealBoard = () => {
+      for(const i of board){
+          for(const j of i){
+              j.visible = true;
+          }
+      }
+      if(roundsCount > 0){
+        if(currentRound + 1 > roundsCount){
+          setGameStatus("Lobby");
+        } else {
+          setCurrentRound(currentRound + 1);
+        }
+      }
+    }
 
   // 3. HANDLERS (Placeholders for your game logic)
   const handleStartNewGame = () => {
@@ -150,21 +164,6 @@ const Mines = () => {
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
-
-    const revealBoard = () => {
-      for(const i of board){
-          for(const j of i){
-              j.visible = true;
-          }
-      }
-      if(roundsCount > 0){
-        if(currentRound + 1 > roundsCount){
-          setGameStatus("Lobby");
-        } else {
-          setCurrentRound(currentRound + 1);
-        }
-      }
-    }
 
     const handleMine = () => {
        setGameStatus("Blown Up");
@@ -290,7 +289,7 @@ const Mines = () => {
           onClick={handleStartNewGame}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
-        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <span> Next Round <ArrowRight size={18} /> </span> : <span> New Game <RefreshCw size={18} /> </span>}
+        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <span className="flex"> Next Round <ArrowRight size={18} /> </span> : <span className='flex'> New Game <RefreshCw size={18} /> </span>}
         </button>
 
         {/* THE GAME GRID DISPLAY */}
