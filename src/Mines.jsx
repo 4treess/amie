@@ -91,7 +91,7 @@ const Mines = () => {
             tempBoard.push(row);
         }
 
-        randomizeMines(tempBoard, validRows, validCols);
+        randomizeMines(tempBoard, validRows, validCols, validMinesCount);
         setBoard(tempBoard)
         console.log(tempBoard)
   };
