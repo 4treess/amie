@@ -101,7 +101,7 @@ const Mines = () => {
 
         if(gameStatus === "Lobby"){
           setPoints(0);
-          setCurrentRound(0);
+          setCurrentRound(1);
         }
         setGameStatus("In Progress")
         setClicks(0);
