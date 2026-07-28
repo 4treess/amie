@@ -67,6 +67,7 @@ const Mines = () => {
 
         const randomizeIcons = () => {
           let randomNum = Math.floor(Math.random() * 101)
+          console.log(randomNum);
           if(randomNum < 50){
             if(randomNum < 25){
               setSafeIcon(() => Heart);
@@ -77,8 +78,6 @@ const Mines = () => {
             }
           }else{
             if(randomNum < 76){
-              setSafeIcon(() => Egg);
-              setBombIcon(() => EggFried);
               if(randomNum > 50){
                 setSafeIcon(() => Smile);
                 setBombIcon(() => Frown);
@@ -87,8 +86,13 @@ const Mines = () => {
                 setBombIcon(() => Flame);
               }
             } else{
-              setSafeIcon(() => Ham);
-              setBombIcon(() => Bone);
+              if(randomNum === 100){
+                setSafeIcon(() => Egg);
+                setBombIcon(() => EggFried);
+              } else{
+                setSafeIcon(() => Ham);
+                setBombIcon(() => Bone);
+              }
             }
           }
         }
