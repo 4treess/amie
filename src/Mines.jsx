@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft} from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight} from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 
@@ -289,7 +289,7 @@ const Mines = () => {
           onClick={handleStartNewGame}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
-          <RefreshCw size={18} /> {roundsCount > 0 && roundsCount > currentRound ? "Next Round"  : "New Game"}
+        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <div><ArrowRight size={18} /> Next Round </div> : <div><RefreshCw size={18} /> New Game </div>}
         </button>
 
         {/* THE GAME GRID DISPLAY */}
