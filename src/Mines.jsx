@@ -236,7 +236,7 @@ const Mines = () => {
                   }`}
                 >
                   {/* Visual content of the cell */}
-                  {cell.visible ? (cell.isMine ? <BombIcon size={20} /> : <SafeIcon size={20}/>) : '?'}
+                  {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500 fill-green-500": gameStatus === "Blown Up" ? "text-red-500 fill-red-500" : "text-black-500"}/> : <SafeIcon size={20}/>) : '?'}
                 </button>
               ))
             )}
