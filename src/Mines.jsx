@@ -27,6 +27,62 @@ const Mines = () => {
   // 3. HANDLERS (Placeholders for your game logic)
   const handleStartNewGame = () => {
     console.log(`Starting new game with ${rows}x${cols} grid and ${minesCount} mines`);
+        
+
+        const sanitizeData = (data, min) => {
+            if(typeof(data) === "number"){
+                if(data > min){
+                    return Math.floor(data);
+                }
+            }
+            return min;
+        }
+        
+        const createCell = (r, c) => ({
+            row: r,
+            col: c,
+            isMine: false,
+            visible: false,
+        });
+
+        const randomizeMines = (board) => {
+            let len = rows*cols;
+            let listOfVals = Array.from({length: len}, (_, index) => index);
+            for(let i = 0; i < minesCount; i++){
+                let index = Math.floor(Math.random() * (len));
+                let number = listOfVals[index]
+
+                let row = Math.floor(number / cols);
+                let col = Math.floor(number % cols);
+
+                board[row][col].isMine = true;
+
+                listOfVals.splice(index, 1);
+                len--;
+            }
+        }
+
+        setRows(sanitizeData(rows, minRowCol));
+        setCols(sanitizeData(cols, minRowCol));
+
+        const minMines = Math.floor(Math.sqrt(rows*cols -1));
+        setMinesCount(sanitizeData(minesCount, minMines));
+
+        if(mines >= (rows * cols)){
+            mines = rows * cols - 1;
+        }
+
+        let tempBoard = []
+        for(let i = 0; i < rows; i++){
+            let row = [];
+            for(let j = 0; j < cols; j++){
+                row.push(createCell(i, j));
+            }
+            tempBoard.push(row);
+        }
+
+        randomizeMines(tempBoard, mines);
+        setBoard(tempBoard)
     // TODO: Call your board generation logic here and set setBoard(...)
   };
 
@@ -101,7 +157,7 @@ const Mines = () => {
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mines</label>
             <input 
               type="number" 
-              min="1"
+              min={Math.floor(Math.sqrt(rows*cols -1))}
               value={minesCount} 
               onChange={(e) => setMinesCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
