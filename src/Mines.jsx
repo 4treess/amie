@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy } from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart } from 'lucide-react';
 
 const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
