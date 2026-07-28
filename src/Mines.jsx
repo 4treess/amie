@@ -122,7 +122,7 @@ const Mines = () => {
     if(board[rowIndex][colIndex].visible === false){
       board[rowIndex][colIndex].visible = true;
       if(board[rowIndex][colIndex].isMine === true){
-        handleMine(board)
+        handleMine()
       } else {
         handleSafeCell()
       }
