@@ -45,7 +45,7 @@ const Mines = () => {
             visible: false,
         });
 
-        const randomizeMines = (board) => {
+        const randomizeMines = (board, rows, cols) => {
             let len = rows*cols;
             let listOfVals = Array.from({length: len}, (_, index) => index);
             for(let i = 0; i < minesCount; i++){
@@ -62,26 +62,28 @@ const Mines = () => {
             }
         }
 
-        setRows(sanitizeData(rows, minRowCol));
-        setCols(sanitizeData(cols, minRowCol));
+        let validRows = sanitizeData(rows, minRowCol);
+        setRows(validRows);
+        let validCols = sanitizeData(cols, minRowCol);
+        setCols(validCols);
 
-        const minMines = Math.floor(Math.sqrt(rows*cols -1));
+        const minMines = Math.floor(Math.sqrt(validRows*validCols -1));
         setMinesCount(sanitizeData(minesCount, minMines));
 
-        if(minesCount >= (rows * cols)){
-            setMinesCount(rows * cols - 1);
+        if(minesCount >= (validRows * validCols)){
+            setMinesCount(validRows * validCols - 1);
         }
 
         let tempBoard = []
-        for(let i = 0; i < rows; i++){
+        for(let i = 0; i < validRows; i++){
             let row = [];
-            for(let j = 0; j < cols; j++){
+            for(let j = 0; j < validCols; j++){
                 row.push(createCell(i, j));
             }
             tempBoard.push(row);
         }
 
-        randomizeMines(tempBoard);
+        randomizeMines(tempBoard, validRows, validCols);
         setBoard(tempBoard)
     // TODO: Call your board generation logic here and set setBoard(...)
   };
