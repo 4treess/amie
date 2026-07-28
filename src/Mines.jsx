@@ -16,7 +16,7 @@ const Mines = () => {
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(4);
   const [roundsCount, setRoundsCount] = useState(0);
-  const [currentRound, setCurrentRound] = useState(0);
+  const [currentRound, setCurrentRound] = useState(1);
 
   // 2. BOARD STATE (Dummy visual layout to start)
   // In React, components re-render based on state updates rather than pure JS functions returning values.
@@ -129,7 +129,7 @@ const Mines = () => {
 
         randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
-        setBoard(tempBoard)
+        setBoard(tempBoard);
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
@@ -139,6 +139,13 @@ const Mines = () => {
           for(const j of i){
               j.visible = true;
           }
+      }
+      if(roundsCount > 0){
+        if(currentRound + 1 > roundsCount){
+          setGameStatus("Lobby");
+        } else {
+          setCurrentRound(currentRound + 1);
+        }
       }
     }
 
@@ -248,7 +255,7 @@ const Mines = () => {
               min="0"
               max="10"
               value={roundsCount} 
-              onChange={(e) => setMinesCount(e.target.value)}
+              onChange={(e) => setRoundsCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
           </div>
