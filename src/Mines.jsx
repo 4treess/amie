@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, Gem} from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, BoneFracture, Flower2, FireExtinguisher, Flame} from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 
@@ -65,6 +65,34 @@ const Mines = () => {
             }
         }
 
+        const randomizeIcons = () => {
+          let randomNum = Math.floor(Math.random() * 101)
+          if(randomNum < 50){
+            if(randomNum < 25){
+              setSafeIcon(() => Heart);
+              setBombIcon(() => HeartCrack);
+            }else{
+              setSafeIcon(() => Gem);
+              setBombIcon(() => Bomb);
+            }
+          }else{
+            if(randomNum < 76){
+              setSafeIcon(() => Egg);
+              setBombIcon(() => EggFried);
+              if(randomNum > 50){
+                setSafeIcon(() => Smile);
+                setBombIcon(() => Frown);
+              }else{
+                setSafeIcon(() => FireExtinguisher);
+                setBombIcon(() => Flame);
+              }
+            } else{
+              setSafeIcon(() => Bone);
+              setBombIcon(() => BoneFracture);
+            }
+          }
+        }
+
         if(gameStatus === "Lobby"){
           setPoints(0);
         }
@@ -92,7 +120,8 @@ const Mines = () => {
             }
             tempBoard.push(row);
         }
-
+        
+        randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
         setBoard(tempBoard)
   };
