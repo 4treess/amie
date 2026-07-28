@@ -265,7 +265,7 @@ const Mines = () => {
 
         {/* LOBBY BUTTON */}
         <button 
-          onClick={setGameStatus("Lobby")}
+          onClick={() => setGameStatus("Lobby")}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
           <CircleArrowLeft size={18} /> Return To Lobby
