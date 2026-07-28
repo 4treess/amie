@@ -111,12 +111,12 @@ const Mines = () => {
         if(gameStatus === "Lobby"){
           setPoints(0);
           setCurrentRound(1);
-        } else {
-          if(gameStatus === "In Progress"){
-            handleRoundEnd();
-          }
         }
-        setGameStatus("In Progress")
+        if(gameStatus === "In Progress"){
+            handleRoundEnd();
+        } else{
+          setGameStatus("In Progress")
+        }
         setClicks(0);
         setRoundsCount(Number(roundsCount))
 
@@ -289,7 +289,7 @@ const Mines = () => {
           onClick={handleStartNewGame}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
-        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <div><ArrowRight size={18} /> Next Round </div> : <div><RefreshCw size={18} /> New Game </div>}
+        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <span><ArrowRight size={18} /> Next Round </span> : <span><RefreshCw size={18} /> New Game </span>}
         </button>
 
         {/* THE GAME GRID DISPLAY */}
