@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, BoneFracture, Flower2, FireExtinguisher, Flame} from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham} from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 
@@ -87,8 +87,8 @@ const Mines = () => {
                 setBombIcon(() => Flame);
               }
             } else{
-              setSafeIcon(() => Bone);
-              setBombIcon(() => BoneFracture);
+              setSafeIcon(() => Ham);
+              setBombIcon(() => Bone);
             }
           }
         }
