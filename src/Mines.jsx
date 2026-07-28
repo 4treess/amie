@@ -63,7 +63,7 @@ const Mines = () => {
             }
         }
 
-        if(gameState === "Lobby"){
+        if(gameStatus === "Lobby"){
           setPoints(0);
         }
         setGameStatus("In Progress")
