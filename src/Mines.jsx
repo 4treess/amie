@@ -264,12 +264,12 @@ const Mines = () => {
         </div>}
 
         {/* LOBBY BUTTON */}
-        <button 
+        {gameStatus != "Lobby" && <button 
           onClick={() => setGameStatus("Lobby")}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
           <CircleArrowLeft size={18} /> Return To Lobby
-        </button>
+        </button>}
 
         {/* RESET / START BUTTON */}
         <button 
@@ -293,7 +293,7 @@ const Mines = () => {
                   className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
                     cell.visible 
                       ? cell.isMine 
-                        ? 'bg-red-100' 
+                        ? 'bg-black-500' 
                         : 'bg-white text-slate-600'
                       : 'bg-rose-300 hover:bg-rose-400 text-transparent'
                   }`}
