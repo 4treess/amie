@@ -32,6 +32,7 @@ const Mines = () => {
         const sanitizeData = (data, min) => {
             if(typeof(data) === "number"){
                 if(data > min){
+                    console.log(data);
                     return Math.floor(data);
                 }
             }
@@ -68,10 +69,12 @@ const Mines = () => {
         setCols(validCols);
 
         const minMines = Math.floor(Math.sqrt(validRows*validCols -1));
-        setMinesCount(sanitizeData(minesCount, minMines));
+        let validMinesCount = sanitizeData(minesCount, minMines);
 
-        if(minesCount >= (validRows * validCols)){
+        if(validMinesCount >= (validRows * validCols)){
             setMinesCount(validRows * validCols - 1);
+        } else { 
+            setMinesCount(validMinesCount);
         }
 
         let tempBoard = []
@@ -82,6 +85,8 @@ const Mines = () => {
             }
             tempBoard.push(row);
         }
+
+        console.log(tempBoard, validCols, validRows, validMinesCount);
 
         randomizeMines(tempBoard, validRows, validCols);
         setBoard(tempBoard)
