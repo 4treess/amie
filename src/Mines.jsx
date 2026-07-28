@@ -49,6 +49,16 @@ const Mines = () => {
             visible: false,
         });
 
+        const handleRoundEnd = () => {
+          if(roundsCount > 0){
+            if(currentRound + 1 > roundsCount){
+              setGameStatus("Lobby");
+            } else {
+              setCurrentRound(currentRound + 1);
+            }
+          }
+        };
+
         // Randomizes the locations of the mines on the game board
         const randomizeMines = (board, rows, cols, mines) => {
             let len = rows*cols;
@@ -69,7 +79,6 @@ const Mines = () => {
 
         const randomizeIcons = () => {
           let randomNum = Math.floor(Math.random() * 101)
-          console.log(randomNum);
           if(randomNum < 50){
             if(randomNum < 25){
               setSafeIcon(() => Heart);
@@ -102,10 +111,15 @@ const Mines = () => {
         if(gameStatus === "Lobby"){
           setPoints(0);
           setCurrentRound(1);
+        } else {
+          if(gameStatus === "In Progress"){
+            handleRoundEnd();
+          }
         }
         setGameStatus("In Progress")
         setClicks(0);
         setRoundsCount(Number(roundsCount))
+
         let validRows = sanitizeData(rows, minRowCol);
         setRows(validRows);
         let validCols = sanitizeData(cols, minRowCol);
@@ -135,7 +149,7 @@ const Mines = () => {
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
-    console.log(`Clicked cell at row ${rowIndex}, col ${colIndex}`);
+
     const revealBoard = () => {
       for(const i of board){
           for(const j of i){
@@ -174,7 +188,6 @@ const Mines = () => {
       }
       setClicks(clicks + 1);
     }
-    // TODO: Handle cell click logic (check if mine, reveal cell, etc.)
   };
 
   return (
@@ -276,7 +289,7 @@ const Mines = () => {
           onClick={handleStartNewGame}
           className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
         >
-          <RefreshCw size={18} /> New Game
+          <RefreshCw size={18} /> {New Game}
         </button>
 
         {/* THE GAME GRID DISPLAY */}
