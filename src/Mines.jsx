@@ -9,7 +9,7 @@ const Mines = () => {
 
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
-  const [minesCount, setMinesCount] = useState(3);
+  const [minesCount, setMinesCount] = useState(4);
 
   // 2. BOARD STATE (Dummy visual layout to start)
   // In React, components re-render based on state updates rather than pure JS functions returning values.
@@ -68,8 +68,8 @@ const Mines = () => {
         const minMines = Math.floor(Math.sqrt(rows*cols -1));
         setMinesCount(sanitizeData(minesCount, minMines));
 
-        if(mines >= (rows * cols)){
-            mines = rows * cols - 1;
+        if(minesCount >= (rows * cols)){
+            setMinesCount(rows * cols - 1);
         }
 
         let tempBoard = []
@@ -158,6 +158,7 @@ const Mines = () => {
             <input 
               type="number" 
               min={Math.floor(Math.sqrt(rows*cols -1))}
+              max={rows*cols - 1}
               value={minesCount} 
               onChange={(e) => setMinesCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
