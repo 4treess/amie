@@ -260,7 +260,7 @@ const Mines = () => {
             <Trophy size={16} className="text-amber-400" /> Points:
           </div>
           <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-            {points}
+            {Math.round(points*100)/100}
           </span>
         </div>
 
