@@ -285,7 +285,7 @@ const Mines = () => {
                   className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
                     cell.visible 
                       ? cell.isMine 
-                        ? 'bg-red-400 text-white' 
+                        ? 'bg-white' 
                         : 'bg-white text-slate-600'
                       : 'bg-rose-300 hover:bg-rose-400 text-transparent'
                   }`}
