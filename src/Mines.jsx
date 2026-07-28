@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart} from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, Gem} from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 
@@ -7,6 +7,8 @@ const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
 
+  const [SafeIcon, setSafeIcon] = useState(() => Gem)
+  const [BombIcon, setBombIcon] = useState(() => Bomb)
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
@@ -93,7 +95,6 @@ const Mines = () => {
 
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
         setBoard(tempBoard)
-        console.log(tempBoard)
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
@@ -235,7 +236,7 @@ const Mines = () => {
                   }`}
                 >
                   {/* Visual content of the cell */}
-                  {cell.visible ? (cell.isMine ? <Bomb size={20} /> : '✓') : '?'}
+                  {cell.visible ? (cell.isMine ? <BombIcon size={20} /> : <SafeIcon size={20}/>) : '?'}
                 </button>
               ))
             )}
