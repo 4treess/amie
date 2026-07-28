@@ -34,36 +34,37 @@ const Mines = () => {
   };
 
   return (
-    <div>
-      <div className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700">
-        <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-          <h1 className="text-rose-500 font-serif text-xl font-bold flex items-center gap-2">
-            <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
-          </h1>
-          <Menu as="div" className="relative">
-            <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">💣 Mines 💣</MenuButton>
-            <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
-              <MenuItem>
-                  {({ active }) => (
-                    <Link 
-                      to="/" 
-                      className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
-                    >
-                      Relationship Timeline
-                    </Link>
-                  )}
-              </MenuItem>
-              <MenuItem>
+    <div className='min-h-screen bg-rose-50'>
+      {/* NAV BAR */}
+      <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <h1 className="text-rose-500 font-serif text-xl font-bold flex items-center gap-2">
+          <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
+        </h1>
+        <Menu as="div" className="relative">
+          <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">💣 Mines 💣</MenuButton>
+          <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
+            <MenuItem>
                 {({ active }) => (
-                  <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
-                    Coming Soon on Future Amieverseries!
-                  </span>
+                  <Link 
+                    to="/" 
+                    className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                  >
+                    Relationship Timeline
+                  </Link>
                 )}
-              </MenuItem>
-            </MenuItems>
-          </Menu>
-        </nav>
-        
+            </MenuItem>
+            <MenuItem>
+              {({ active }) => (
+                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
+                  Coming Soon on Future Amieverseries!
+                </span>
+              )}
+            </MenuItem>
+          </MenuItems>
+        </Menu>
+      </nav>
+
+      <div className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700">
         {/* HEADER & CONTROLS */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-serif text-slate-800 flex items-center justify-center gap-2">
