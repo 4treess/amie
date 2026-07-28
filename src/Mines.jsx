@@ -7,6 +7,9 @@ const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
 
+  const [gameStatus, setGameStatus] = useState("Lobby")
+  const [points, setPoints] = useState(0);
+  const [clicks, setClicks] = useState(0);
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(4);
@@ -26,8 +29,6 @@ const Mines = () => {
 
   // 3. HANDLERS (Placeholders for your game logic)
   const handleStartNewGame = () => {
-    console.log(`Starting new game with ${rows}x${cols} grid and ${minesCount} mines`);
-        
         // Prevents the data from exceeding its bounds, and prevents fractional amounts
         const sanitizeData = (data, min) => {
             data = Number(data)
@@ -44,6 +45,7 @@ const Mines = () => {
             visible: false,
         });
 
+        // Randomizes the locations of the mines on the game board
         const randomizeMines = (board, rows, cols, mines) => {
             let len = rows*cols;
             let listOfVals = Array.from({length: len}, (_, index) => index);
@@ -61,6 +63,11 @@ const Mines = () => {
             }
         }
 
+        if(gameState === "Lobby"){
+          setPoints(0);
+        }
+        setGameStatus("In Progress")
+        setClicks(0);
         let validRows = sanitizeData(rows, minRowCol);
         setRows(validRows);
         let validCols = sanitizeData(cols, minRowCol);
@@ -73,6 +80,7 @@ const Mines = () => {
             validMinesCount = validRows * validCols - 1;
         }
         setMinesCount(validMinesCount);
+        console.log(`Starting new game with ${validRows}x${validCols} grid and ${validMinesCount} mines`);
 
         let tempBoard = []
         for(let i = 0; i < validRows; i++){
@@ -83,15 +91,43 @@ const Mines = () => {
             tempBoard.push(row);
         }
 
-        console.log(tempBoard, validCols, validRows, validMinesCount);
-
         randomizeMines(tempBoard, validRows, validCols);
         setBoard(tempBoard)
-    // TODO: Call your board generation logic here and set setBoard(...)
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
     console.log(`Clicked cell at row ${rowIndex}, col ${colIndex}`);
+    const revealBoard = () => {
+      for(const i of board){
+          for(const j of i){
+              j.visible = true;
+          }
+      }
+    }
+
+    const handleMine = () => {
+       setGameStatus("Blown Up");
+       revealBoard();
+    }
+
+    const handleSafeCell = () => {
+      turnsLeft = rows*cols - minesCount - clicks;
+      if(turnsLeft <= 1){
+        setGameStatus("Victory");
+        revealBoard();
+      }
+      setPoints(points + minesCount/(turnsLeft))
+    }
+
+    if(board[rowIndex][colIndex].visible === false){
+      board[rowIndex][colIndex].visible = true;
+      if(board[rowIndex][colIndex].isMine === true){
+        handleMine(board)
+      } else {
+        handleSafeCell()
+      }
+      setClicks(clicks + 1);
+    }
     // TODO: Handle cell click logic (check if mine, reveal cell, etc.)
   };
 
@@ -211,7 +247,19 @@ const Mines = () => {
             <Trophy size={16} className="text-amber-400" /> Status:
           </div>
           <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-            In Progress
+            {gameStatus}
+          </span>
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <Trophy size={16} className="text-amber-400" /> Moves:
+          </div>
+          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+            {clicks}
+          </span>
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <Trophy size={16} className="text-amber-400" /> Points:
+          </div>
+          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+            {points}
           </span>
         </div>
 
