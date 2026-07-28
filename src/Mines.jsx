@@ -105,6 +105,7 @@ const Mines = () => {
         }
         setGameStatus("In Progress")
         setClicks(0);
+        setRoundsCount(Number(roundsCount))
         let validRows = sanitizeData(rows, minRowCol);
         setRows(validRows);
         let validCols = sanitizeData(cols, minRowCol);
