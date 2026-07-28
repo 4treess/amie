@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 
 const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
-  const minRows
+  const minRowCol = 2;
+
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(3);
