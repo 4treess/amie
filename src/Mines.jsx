@@ -14,7 +14,7 @@ const Mines = () => {
   const [clicks, setClicks] = useState(0);
   const [rows, setRows] = useState(2);
   const [cols, setCols] = useState(2);
-  const [minesCount, setMinesCount] = useState(4);
+  const [minesCount, setMinesCount] = useState(1);
 
   // 2. BOARD STATE (Dummy visual layout to start)
   // In React, components re-render based on state updates rather than pure JS functions returning values.
@@ -120,7 +120,7 @@ const Mines = () => {
             }
             tempBoard.push(row);
         }
-        
+
         randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
         setBoard(tempBoard)
