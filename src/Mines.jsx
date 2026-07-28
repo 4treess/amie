@@ -111,7 +111,7 @@ const Mines = () => {
     }
 
     const handleSafeCell = () => {
-      turnsLeft = rows*cols - minesCount - clicks;
+      let turnsLeft = rows*cols - minesCount - clicks;
       if(turnsLeft <= 1){
         setGameStatus("Victory");
         revealBoard();
