@@ -101,6 +101,7 @@ const Mines = () => {
 
         if(gameStatus === "Lobby"){
           setPoints(0);
+          setCurrentRound(0);
         }
         setGameStatus("In Progress")
         setClicks(0);
@@ -248,7 +249,7 @@ const Mines = () => {
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
           </div>
-          <div>
+          {gameStatus === "Lobby" && <div>
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rounds</label>
             <input 
               type="number" 
@@ -258,7 +259,7 @@ const Mines = () => {
               onChange={(e) => setRoundsCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
-          </div>
+          </div>}
         </div>
 
         {/* RESET / START BUTTON */}
