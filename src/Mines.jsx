@@ -70,10 +70,9 @@ const Mines = () => {
         let validMinesCount = sanitizeData(minesCount, minMines);
 
         if(validMinesCount >= (validRows * validCols)){
-            setMinesCount(validRows * validCols - 1);
-        } else { 
-            setMinesCount(validMinesCount);
+            validMinesCount = validRows * validCols - 1;
         }
+        setMinesCount(validMinesCount);
 
         let tempBoard = []
         for(let i = 0; i < validRows; i++){
