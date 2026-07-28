@@ -204,7 +204,7 @@ const fetchEvents = async () => {
             </MenuItem>
             <MenuItem>
               {({ active }) => (
-                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
+                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}>
                   Coming Soon on Future Amieverseries!
                 </span>
               )}

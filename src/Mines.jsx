@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
+  const minRows
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(3);
@@ -14,7 +15,7 @@ const Mines = () => {
   const [board, setBoard] = useState([
     [
       { row: 0, col: 0, isMine: false, visible: true },
-      { row: 0, col: 1, isMine: true, visible: false },
+      { row: 0, col: 1, isMine: true, visible: true },
     ],
     [
       { row: 1, col: 0, isMine: false, visible: false },
@@ -55,7 +56,7 @@ const Mines = () => {
             </MenuItem>
             <MenuItem>
               {({ active }) => (
-                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50' : ''}`}>
+                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}>
                   Coming Soon on Future Amieverseries!
                 </span>
               )}
@@ -81,8 +82,8 @@ const Mines = () => {
               type="number" 
               min="2"
               value={rows} 
-              onChange={(e) => setRows(Number(e.target.value))}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+              onChange={(e) => setRows(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
             />
           </div>
           <div>
@@ -91,8 +92,8 @@ const Mines = () => {
               type="number" 
               min="2"
               value={cols} 
-              onChange={(e) => setCols(Number(e.target.value))}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+              onChange={(e) => setCols(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
             />
           </div>
           <div>
@@ -101,8 +102,8 @@ const Mines = () => {
               type="number" 
               min="1"
               value={minesCount} 
-              onChange={(e) => setMinesCount(Number(e.target.value))}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+              onChange={(e) => setMinesCount(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
             />
           </div>
         </div>
