@@ -23,11 +23,11 @@ const Mines = () => {
   const [board, setBoard] = useState([
     [
       { row: 0, col: 0, isMine: false, visible: true },
-      { row: 0, col: 1, isMine: true, visible: true },
+      { row: 0, col: 1, isMine: false, visible: false },
     ],
     [
       { row: 1, col: 0, isMine: false, visible: false },
-      { row: 1, col: 1, isMine: false, visible: true },
+      { row: 1, col: 1, isMine: true, visible: true },
     ]
   ]);
 
