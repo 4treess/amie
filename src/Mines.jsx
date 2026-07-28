@@ -30,9 +30,9 @@ const Mines = () => {
         
         // Prevents the data from exceeding its bounds, and prevents fractional amounts
         const sanitizeData = (data, min) => {
+            console.log(data, typeof(data));
             if(typeof(data) === "number"){
                 if(data > min){
-                    console.log(data);
                     return Math.floor(data);
                 }
             }
