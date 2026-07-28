@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart } from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart} from 'lucide-react';
+import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 
 const Mines = () => {
   // 1. GAME CONTROLS STATE (Configuration inputs)
