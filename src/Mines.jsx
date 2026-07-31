@@ -20,6 +20,7 @@ const Mines = () => {
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
+  const [nickname, setNickname] = useState("");
 
   // 2. BOARD STATE (Dummy visual layout to start)
   const [board, setBoard] = useState([
@@ -277,11 +278,20 @@ const Mines = () => {
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room Name</label>
+            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room</label>
             <input 
               type="string" 
               value=""
               onChange={(e) => setRoomID(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Name</label>
+            <input 
+              type="string" 
+              value=""
+              onChange={(e) => setNickname(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
             />
           </div>
