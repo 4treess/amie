@@ -13,7 +13,6 @@ const Mines = () => {
   // Navigation State
   const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
   const [isJoined, setIsJoined] = useState(false);
-  const [isHost, setIsHost] = useState(false);
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
@@ -26,6 +25,8 @@ const Mines = () => {
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(4);
+  const [giftCount, setGiftCount] = useState(0);
+  const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
 
@@ -64,40 +65,61 @@ const Mines = () => {
 
     socket.emit('joinGame', {
       roomID: RoomID,
-      playerID,
-      nickname
+      playerID: playerID,
+      nickname: nickname,
+      status: gameStatus
     });
 
     socket.on('room_status_update', (roomData) => {
       setPlayersList(roomData.players || {});
       if (roomData.gameState) setGameStatus(roomData.gameState);
+
+      const playerIDs = Object.keys(roomData.players || {});
+      playerIDs.forEach(element => {
+        if(element === playerID){
+          if (roomData.players[element].rows) setRows(roomData.players[element].rows);
+          if (roomData.players[element].cols) setCols(roomData.players[element].cols);
+          if (roomData.players[element].mines) setMinesCount(roomData.players[element].mines);
+          if (roomData.players[element].nukes !== undefined) setNukeCount(roomData.players[element].nukes);
+          if (roomData.players[element].gifts !== undefined) setGiftCount(roomData.players[element].gifts);
+        }
+      });
     });
 
-    socket.on('game_started', ({ masterBoard }) => {
-      setBoard(masterBoard);
-      setGameStatus("In Game");
-      setClicks(0);
+    socket.on('start_game', ({ room }) => {
+      socket.emit('room_status_update', room);
+      handleStartNewGame();
     });
 
-    socket.on('restore_board', ({ savedBoard, savedStatus, currentGameState }) => {
-      if (savedBoard) setBoard(savedBoard);
-      if (savedStatus) setGameStatus(savedStatus);
-      if (currentGameState) setGameStatus(currentGameState);
-    });
-
-    socket.on('game_over', ({ players }) => {
+    socket.on('round_over', ({ room }) => {
+      if(room.state === "Lobby"){
+        socket.emit('room_status_update', room);
+      }else{
+        socket.emit("startGame", RoomID);
+      }
       setGameStatus("Finished");
-      setPlayersList(players);
+      setPlayersList(room.players || {});
     });
 
     return () => {
       socket.off('room_status_update');
-      socket.off('game_started');
-      socket.off('restore_board');
-      socket.off('game_over');
+      socket.off('start_game');
+      socket.off('round_over');
       socket.disconnect();
     };
   }, [isJoined, activeTab, RoomID, playerID, nickname]);
+
+  // Sync settings when inputs change in multiplayer
+  useEffect(() => {
+    if (isJoined && activeTab === 'multiplayer' && RoomID) {
+      socket.emit('changeSettings', {
+        roomID: RoomID,
+        rows: rows,
+        cols: cols,
+        mines: minesCount
+      });
+    }
+  }, [rows, cols, minesCount, isJoined, activeTab, RoomID]);
 
   const revealBoard = () => {
       for(const i of board){
@@ -229,7 +251,7 @@ const Mines = () => {
         randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
 
-        if (activeTab === 'multiplayer' && isJoined && isHost) {
+        if (activeTab === 'multiplayer' && isJoined) {
           socket.emit('start_game', {
             roomID: RoomID,
             generatedBoard: tempBoard
@@ -265,15 +287,6 @@ const Mines = () => {
         handleSafeCell();
       }
       setClicks(clicks + 1);
-
-      if (activeTab === 'multiplayer' && isJoined) {
-        socket.emit('save_progress', {
-          roomID: RoomID,
-          playerID,
-          updatedBoard: board,
-          status: nextStatus
-        });
-      }
     }
   };
 
@@ -378,19 +391,6 @@ const Mines = () => {
               />
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
-              <input 
-                type="checkbox"
-                id="hostCheckbox"
-                checked={isHost}
-                onChange={(e) => setIsHost(e.target.checked)}
-                className="w-4 h-4 text-rose-500 rounded border-gray-300 focus:ring-rose-500"
-              />
-              <label htmlFor="hostCheckbox" className="text-xs font-bold text-slate-600">
-                I am the Host (Will start game for everyone)
-              </label>
-            </div>
-
             <button 
               type="submit"
               className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mt-4 hover:scale-105"
@@ -472,19 +472,13 @@ const Mines = () => {
             </button>}
 
             {/* RESET / START BUTTON */}
-            {(activeTab === 'singleplayer' || isHost) && (
+            {(activeTab === 'singleplayer') && (
               <button 
                 onClick={handleStartNewGame}
                 className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
               >
               {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
               </button>
-            )}
-
-            {activeTab === 'multiplayer' && !isHost && gameStatus === 'Lobby' && (
-              <p className="text-center text-xs font-bold text-rose-400 animate-pulse mb-6">
-                Waiting for host to start new game...
-              </p>
             )}
 
             {/* THE GAME GRID DISPLAY */}
