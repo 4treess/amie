@@ -18,6 +18,9 @@ const Mines = () => {
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
 
+  // Multiplayer States
+  const [RoomID, setRoomID] = useState("");
+
   // 2. BOARD STATE (Dummy visual layout to start)
   const [board, setBoard] = useState([
     [
@@ -126,10 +129,10 @@ const Mines = () => {
           setPoints(0);
           setCurrentRound(1);
         }
-        if(gameStatus === "In Progress"){
+        if(gameStatus === "In Game"){
             handleRoundEnd();
         } else{
-          setGameStatus("In Progress")
+          setGameStatus("In Game")
         }
         setClicks(0);
         setRoundsCount(Number(roundsCount))
@@ -271,6 +274,15 @@ const Mines = () => {
               value={roundsCount} 
               onChange={(e) => setRoundsCount(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room Name</label>
+            <input 
+              type="string" 
+              value=""
+              onChange={(e) => setRoomID(e.target.value)}
+              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
             />
           </div>
         </div>}
