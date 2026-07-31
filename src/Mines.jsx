@@ -88,7 +88,6 @@ const Mines = () => {
 
     socket.on('start_game', ({ room }) => {
       socket.emit('room_status_update', room);
-      handleStartNewGame();
     });
 
     socket.on('round_over', ({ room }) => {
@@ -251,10 +250,11 @@ const Mines = () => {
         randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
 
+        setBoard(tempBoard);
+
         if (activeTab === 'multiplayer' && isJoined) {
           socket.emit('start_game', {
-            roomID: RoomID,
-            
+            roomID: RoomID, 
           });
         } 
   };
