@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
 // Socket instance initialized outside component to prevent multiple connections on re-render
-const socket = io('https://your-backend-url.onrender.com', {
+const socket = io('https://amie-server-mdhz.onrender.com', {
   autoConnect: false
 });
 
