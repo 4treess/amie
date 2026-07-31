@@ -254,11 +254,9 @@ const Mines = () => {
         if (activeTab === 'multiplayer' && isJoined) {
           socket.emit('start_game', {
             roomID: RoomID,
-            generatedBoard: tempBoard
+            
           });
-        } else {
-          setBoard(tempBoard);
-        }
+        } 
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
