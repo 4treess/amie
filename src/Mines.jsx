@@ -281,7 +281,7 @@ const Mines = () => {
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room</label>
             <input 
               type="text" 
-              value=""
+              value={RoomID}
               onChange={(e) => setRoomID(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
             />
@@ -290,7 +290,7 @@ const Mines = () => {
             <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Name</label>
             <input 
               type="text" 
-              value=""
+              value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
             />
