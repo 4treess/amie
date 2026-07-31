@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight, Users, User } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
+import io from 'socket.io-client';
+
+// Socket instance initialized outside component to prevent multiple connections on re-render
+const socket = io('https://your-backend-url.onrender.com', {
+  autoConnect: false
+});
 
 const Mines = () => {
+  // Navigation State
+  const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
+  const [isJoined, setIsJoined] = useState(false);
+  const [isHost, setIsHost] = useState(false);
+
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
 
@@ -21,6 +32,17 @@ const Mines = () => {
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
   const [nickname, setNickname] = useState("");
+  const [playersList, setPlayersList] = useState({});
+
+  // Persistent Player ID
+  const [playerID] = useState(() => {
+    let saved = localStorage.getItem('mines_player_id');
+    if (!saved) {
+      saved = crypto.randomUUID();
+      localStorage.setItem('mines_player_id', saved);
+    }
+    return saved;
+  });
 
   // 2. BOARD STATE (Dummy visual layout to start)
   const [board, setBoard] = useState([
@@ -33,6 +55,49 @@ const Mines = () => {
       { row: 1, col: 1, isMine: true, visible: true },
     ]
   ]);
+
+  // Socket connection lifecycle for Multiplayer Tab
+  useEffect(() => {
+    if (!isJoined || activeTab !== 'multiplayer') return;
+
+    socket.connect();
+
+    socket.emit('joinGame', {
+      roomID: RoomID,
+      playerID,
+      nickname
+    });
+
+    socket.on('room_status_update', (roomData) => {
+      setPlayersList(roomData.players || {});
+      if (roomData.gameState) setGameStatus(roomData.gameState);
+    });
+
+    socket.on('game_started', ({ masterBoard }) => {
+      setBoard(masterBoard);
+      setGameStatus("In Game");
+      setClicks(0);
+    });
+
+    socket.on('restore_board', ({ savedBoard, savedStatus, currentGameState }) => {
+      if (savedBoard) setBoard(savedBoard);
+      if (savedStatus) setGameStatus(savedStatus);
+      if (currentGameState) setGameStatus(currentGameState);
+    });
+
+    socket.on('game_over', ({ players }) => {
+      setGameStatus("Finished");
+      setPlayersList(players);
+    });
+
+    return () => {
+      socket.off('room_status_update');
+      socket.off('game_started');
+      socket.off('restore_board');
+      socket.off('game_over');
+      socket.disconnect();
+    };
+  }, [isJoined, activeTab, RoomID, playerID, nickname]);
 
   const revealBoard = () => {
       for(const i of board){
@@ -163,7 +228,15 @@ const Mines = () => {
 
         randomizeIcons();
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
-        setBoard(tempBoard);
+
+        if (activeTab === 'multiplayer' && isJoined && isHost) {
+          socket.emit('start_game', {
+            roomID: RoomID,
+            generatedBoard: tempBoard
+          });
+        } else {
+          setBoard(tempBoard);
+        }
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
@@ -184,13 +257,37 @@ const Mines = () => {
 
     if(board[rowIndex][colIndex].visible === false){
       board[rowIndex][colIndex].visible = true;
+      let nextStatus = gameStatus;
       if(board[rowIndex][colIndex].isMine === true){
-        handleMine()
+        handleMine();
+        nextStatus = "Blown Up";
       } else {
-        handleSafeCell()
+        handleSafeCell();
       }
       setClicks(clicks + 1);
+
+      if (activeTab === 'multiplayer' && isJoined) {
+        socket.emit('save_progress', {
+          roomID: RoomID,
+          playerID,
+          updatedBoard: board,
+          status: nextStatus
+        });
+      }
     }
+  };
+
+  const handleJoinMultiplayer = (e) => {
+    e.preventDefault();
+    if (!RoomID.trim() || !nickname.trim()) return;
+    setIsJoined(true);
+    setGameStatus("Lobby");
+  };
+
+  const handleLeaveMultiplayer = () => {
+    socket.disconnect();
+    setIsJoined(false);
+    setGameStatus("Lobby");
   };
 
   return (
@@ -224,149 +321,228 @@ const Mines = () => {
         </Menu>
       </nav>
 
-      <div className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700">
-        {/* HEADER & CONTROLS */}
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-serif text-slate-800 flex items-center justify-center gap-2">
-            <Bomb className="text-rose-500" size={24} /> Mines!
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">Configure your board and test your luck!</p>
-        </div>
-
-        {/* INPUT CONTROLS ROW */}
-        {gameStatus === "Lobby" && <div className="grid grid-cols-3 gap-2 mb-6">
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rows</label>
-            <input 
-              type="number" 
-              min="2"
-              value={rows} 
-              onChange={(e) => setRows(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Cols</label>
-            <input 
-              type="number" 
-              min="2"
-              value={cols} 
-              onChange={(e) => setCols(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mines</label>
-            <input 
-              type="number" 
-              min={Math.floor(Math.sqrt(rows*cols -1))}
-              max={rows*cols - 1}
-              value={minesCount} 
-              onChange={(e) => setMinesCount(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rounds</label>
-            <input 
-              type="number" 
-              min="0"
-              max="10"
-              value={roundsCount} 
-              onChange={(e) => setRoundsCount(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non invalid:text-red-500"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room</label>
-            <input 
-              type="text" 
-              value={RoomID}
-              onChange={(e) => setRoomID(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
-            />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Name</label>
-            <input 
-              type="text" 
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-non"
-            />
-          </div>
-        </div>}
-
-        {/* LOBBY BUTTON */}
-        {gameStatus != "Lobby" && <button 
-          onClick={() => setGameStatus("Lobby")}
-          className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
-        >
-          <CircleArrowLeft size={18} /> Return To Lobby
-        </button>}
-
-        {/* RESET / START BUTTON */}
-        <button 
-          onClick={handleStartNewGame}
-          className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
-        >
-        {roundsCount > 0 && roundsCount >= currentRound && gameStatus != "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
-        </button>
-
-        {/* THE GAME GRID DISPLAY */}
-        <div className="flex justify-center mb-6">
-          <div 
-            className="grid gap-2 bg-rose-100 p-3 rounded-2xl"
-            style={{ gridTemplateColumns: `repeat(${board[0]?.length || 2}, minmax(0, 1fr))` }}
+      <div className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700 mt-6">
+        {/* MODE TABS */}
+        <div className="flex gap-2 border-b border-rose-100 mb-6">
+          <button
+            onClick={() => { setActiveTab('singleplayer'); handleLeaveMultiplayer(); }}
+            className={`flex-1 py-2 font-bold text-sm border-b-2 transition-all flex items-center justify-center gap-2 ${
+              activeTab === 'singleplayer'
+                ? 'border-rose-500 text-rose-500'
+                : 'border-transparent text-slate-400 hover:text-slate-600'
+            }`}
           >
-            {board.map((rowArray, rIdx) => 
-              rowArray.map((cell, cIdx) => (
-                <button
-                  key={`${rIdx}-${cIdx}`}
-                  onClick={() => handleCellClick(rIdx, cIdx)}
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
-                    cell.visible 
-                      ? cell.isMine 
-                        ? 'bg-black-500' 
-                        : 'bg-white text-slate-600'
-                      : 'bg-rose-300 hover:bg-rose-400 text-transparent'
-                  }`}
-                >
-                  {/* Visual content of the cell */}
-                  {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" ? "text-red-500" : "text-black-500"}/>) : '?'}
-                </button>
-              ))
-            )}
-          </div>
+            <User size={16} /> Singleplayer
+          </button>
+          <button
+            onClick={() => setActiveTab('multiplayer')}
+            className={`flex-1 py-2 font-bold text-sm border-b-2 transition-all flex items-center justify-center gap-2 ${
+              activeTab === 'multiplayer'
+                ? 'border-rose-500 text-rose-500'
+                : 'border-transparent text-slate-400 hover:text-slate-600'
+            }`}
+          >
+            <Users size={16} /> Multiplayer
+          </button>
         </div>
 
-        {/* SCORE / STATUS DISPLAY */}
-        <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100">
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            Status:
-          </div>
-          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-            {gameStatus}
-          </span>
-          <div className={`${roundsCount === 0 ? "absolute text-transparent" : "flex items-center gap-2 text-xs text-slate-500 font-medium" }`}>
-            Round:
-          </div>
-          <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
-            {currentRound} / {roundsCount}
-          </span>
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            Moves:
-          </div>
-          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-            {clicks}
-          </span>
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-            Points:
-          </div>
-          <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-            {Math.round(points*100)/100}
-          </span>
-        </div>
+        {/* MULTIPLAYER PROMPT FORM */}
+        {activeTab === 'multiplayer' && !isJoined ? (
+          <form onSubmit={handleJoinMultiplayer} className="space-y-4">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-serif font-bold text-slate-800">Join a Room</h3>
+              <p className="text-xs text-slate-400">Enter a Room Name and your Nickname to get started.</p>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Room</label>
+              <input 
+                type="text" 
+                required
+                value={RoomID}
+                onChange={(e) => setRoomID(e.target.value)}
+                className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+                placeholder="e.g. ROOM123"
+              />
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Multiplayer Name</label>
+              <input 
+                type="text" 
+                required
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+                placeholder="e.g. PlayerOne"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <input 
+                type="checkbox"
+                id="hostCheckbox"
+                checked={isHost}
+                onChange={(e) => setIsHost(e.target.checked)}
+                className="w-4 h-4 text-rose-500 rounded border-gray-300 focus:ring-rose-500"
+              />
+              <label htmlFor="hostCheckbox" className="text-xs font-bold text-slate-600">
+                I am the Host (Will start game for everyone)
+              </label>
+            </div>
+
+            <button 
+              type="submit"
+              className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mt-4 hover:scale-105"
+            >
+              Enter Room 🚀
+            </button>
+          </form>
+        ) : (
+          /* GAME SCREEN (Identical for Singleplayer & Multiplayer) */
+          <>
+            {/* HEADER & CONTROLS */}
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-serif text-slate-800 flex items-center justify-center gap-2">
+                <Bomb className="text-rose-500" size={24} /> Mines!
+              </h2>
+              <p className="text-xs text-slate-400 mt-1">Configure your board and test your luck!</p>
+              {activeTab === 'multiplayer' && (
+                <p className="text-xs font-bold text-rose-500 mt-1">
+                  Room: {RoomID} | Player: {nickname}
+                </p>
+              )}
+            </div>
+
+            {/* INPUT CONTROLS ROW */}
+            {gameStatus === "Lobby" && <div className="grid grid-cols-2 gap-2 mb-6">
+              <div>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rows</label>
+                <input 
+                  type="number" 
+                  min="2"
+                  value={rows} 
+                  onChange={(e) => setRows(e.target.value)}
+                  className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Cols</label>
+                <input 
+                  type="number" 
+                  min="2"
+                  value={cols} 
+                  onChange={(e) => setCols(e.target.value)}
+                  className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mines</label>
+                <input 
+                  type="number" 
+                  min={Math.floor(Math.sqrt(rows*cols -1))}
+                  max={rows*cols - 1}
+                  value={minesCount} 
+                  onChange={(e) => setMinesCount(e.target.value)}
+                  className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rounds</label>
+                <input 
+                  type="number" 
+                  min="0"
+                  max="10"
+                  value={roundsCount} 
+                  onChange={(e) => setRoundsCount(e.target.value)}
+                  className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
+                />
+              </div>
+            </div>}
+
+            {/* LOBBY / LEAVE BUTTON */}
+            {gameStatus !== "Lobby" && <button 
+              onClick={() => {
+                setGameStatus("Lobby");
+                if (activeTab === 'multiplayer') handleLeaveMultiplayer();
+              }}
+              className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
+            >
+              <CircleArrowLeft size={18} /> Return To Lobby
+            </button>}
+
+            {/* RESET / START BUTTON */}
+            {(activeTab === 'singleplayer' || isHost) && (
+              <button 
+                onClick={handleStartNewGame}
+                className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
+              >
+              {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
+              </button>
+            )}
+
+            {activeTab === 'multiplayer' && !isHost && gameStatus === 'Lobby' && (
+              <p className="text-center text-xs font-bold text-rose-400 animate-pulse mb-6">
+                Waiting for host to start new game...
+              </p>
+            )}
+
+            {/* THE GAME GRID DISPLAY */}
+            <div className="flex justify-center mb-6">
+              <div 
+                className="grid gap-2 bg-rose-100 p-3 rounded-2xl"
+                style={{ gridTemplateColumns: `repeat(${board[0]?.length || 2}, minmax(0, 1fr))` }}
+              >
+                {board.map((rowArray, rIdx) => 
+                  rowArray.map((cell, cIdx) => (
+                    <button
+                      key={`${rIdx}-${cIdx}`}
+                      onClick={() => handleCellClick(rIdx, cIdx)}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
+                        cell.visible 
+                          ? cell.isMine 
+                            ? 'bg-black-500' 
+                            : 'bg-white text-slate-600'
+                          : 'bg-rose-300 hover:bg-rose-400 text-transparent'
+                      }`}
+                    >
+                      {/* Visual content of the cell */}
+                      {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" ? "text-red-500" : "text-black-500"}/>) : '?'}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* SCORE / STATUS DISPLAY */}
+            <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100">
+              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                Status:
+              </div>
+              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+                {gameStatus}
+              </span>
+              <div className={`${roundsCount === 0 ? "absolute text-transparent" : "flex items-center gap-2 text-xs text-slate-500 font-medium" }`}>
+                Round:
+              </div>
+              <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
+                {currentRound} / {roundsCount}
+              </span>
+              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                Moves:
+              </div>
+              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+                {clicks}
+              </span>
+              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                Points:
+              </div>
+              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
+                {Math.round(points*100)/100}
+              </span>
+            </div>
+          </>
+        )}
 
       </div>
     </div>
