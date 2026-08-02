@@ -115,7 +115,8 @@ const Mines = () => {
         roomID: RoomID,
         rows: rows,
         cols: cols,
-        mines: minesCount
+        mines: minesCount,
+        rounds: roundsCount
       });
     }
   }, [rows, cols, minesCount, isJoined, activeTab, RoomID]);
@@ -472,7 +473,7 @@ const Mines = () => {
             {/* RESET / START BUTTON */}
             {
               <button 
-                onClick={handleStartNewGame}
+                onClick={activeTab === 'Multiplayer' ? socket.emit("startGame", RoomID) : handleStartNewGame}
                 className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
               >
               {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
