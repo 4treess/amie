@@ -516,7 +516,8 @@ const Mines = () => {
             </div>
 
             {/* SCORE / STATUS DISPLAY */}
-            <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100">
+            <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100 text-rose-500">
+              {activeTab === 'multiplayer'? nickname : "Your Stats:"}
               <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                 Status:
               </div>
