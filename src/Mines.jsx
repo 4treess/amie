@@ -267,6 +267,14 @@ const Mines = () => {
     const handleMine = () => {
        setGameStatus("Blown Up");
        revealBoard();
+       if (activeTab === 'multiplayer' && isJoined) {
+        socket.emit('endGame', {
+          roomID: RoomID,
+          playerID: playerID,
+          score: newPoints,
+          status: "Blown Up"
+        });
+      }
     }
 
     const handleSafeCell = () => {
@@ -274,6 +282,14 @@ const Mines = () => {
       if(turnsLeft <= 1){
         setGameStatus("Victory");
         revealBoard();
+        if (activeTab === 'multiplayer' && isJoined) {
+          socket.emit('endGame', {
+            roomID: RoomID,
+            playerID: playerID,
+            score: newPoints,
+            status: "Victory"
+          });
+        }
       }
       setPoints(points + 100*minesCount/(turnsLeft))
     }
@@ -516,51 +532,46 @@ const Mines = () => {
             </div>
 
             {/* SCORE / STATUS DISPLAY */}
-            
-            <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100 text-rose-500 text-xs">
-              {activeTab === 'multiplayer'? Object.values(playersList).sort((a, b) => a.score - b.score).map(({nickname, status, score}) => {
-                <div>{nickname}
-                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                    Status:
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs space-y-3">
+              {activeTab === 'multiplayer' ? (
+                <div>
+                  <h4 className="font-bold text-slate-700 uppercase tracking-wider mb-2 border-b border-slate-200 pb-1">
+                    Leaderboard
+                  </h4>
+                  <div className="space-y-2">
+                    {Object.values(playersList)
+                      .sort((a, b) => (b.score || 0) - (a.score || 0)) // Sort highest score first
+                      .map((player, idx) => (
+                        <div key={idx} className="flex items-center justify-between bg-white p-2.5 rounded-lg shadow-sm border border-slate-100">
+                          <div>
+                            <span className="font-bold text-slate-800">{player.nickname || 'Player'}</span>
+                            <span className="ml-2 text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-rose-100 text-rose-600">
+                              {player.status || 'Lobby'}
+                            </span>
+                          </div>
+                          <div className="font-bold text-rose-500">
+                            {Math.round((player.score || 0) * 100) / 100} pts
+                          </div>
+                        </div>
+                      ))}
                   </div>
-                  <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-                    {status}
-                  </span>
-                  <div className={`${roundsCount === 0 ? "absolute text-transparent" : "flex items-center gap-2 text-xs text-slate-500 font-medium" }`}>
-                    Round:
+                </div>
+              ) : (
+                /* SINGLEPLAYER DISPLAY */
+                <div className="flex items-center justify-between text-slate-600 font-medium">
+                  <div>
+                    Status: <span className="font-bold text-rose-500 uppercase">{gameStatus}</span>
                   </div>
-                  <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
-                    {currentRound} / {roundsCount}
-                  </span>
-                  <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                    Points:
+                  {roundsCount > 0 && (
+                    <div>
+                      Round: <span className="font-bold text-rose-500">{currentRound} / {roundsCount}</span>
+                    </div>
+                  )}
+                  <div>
+                    Points: <span className="font-bold text-rose-500">{Math.round(points * 100) / 100}</span>
                   </div>
-                  <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-                    {Math.round(score*100)/100}
-                  </span>
-                </div>}) : <span>"Your Stats:" <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                Status:
-              </div>
-              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-                {gameStatus}
-              </span>
-              <div className={`${roundsCount === 0 ? "absolute text-transparent" : "flex items-center gap-2 text-xs text-slate-500 font-medium" }`}>
-                Round:
-              </div>
-              <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
-                {currentRound} / {roundsCount}
-              </span>
-              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                Points:
-              </div>
-              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-                {Math.round(points*100)/100}
-              </span>
-              </span>}
-            </div> 
-              
-            <div className="bg-slate-50 p-4 rounded-xl flex items-center justify-between border border-slate-100 text-rose-500 text-xs">
-              
+                </div>
+              )}
             </div>
             
           </>
