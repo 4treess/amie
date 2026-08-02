@@ -163,8 +163,8 @@ const Mines = () => {
         });
 
         const handleRoundEnd = () => {
-          if(roundsCount > 0){
-            if(currentRound + 1 > roundsCount){
+          if(targetRounds > 0){
+            if(currentRound + 1 > targetRounds){
               setGameStatus("Lobby");
             } else {
               setCurrentRound(currentRound + 1);
@@ -231,7 +231,7 @@ const Mines = () => {
           setGameStatus("In Game")
         }
         setClicks(0);
-        setRoundsCount(Number(roundsCount))
+        setRoundsCount(Number(targetRounds))
 
         let validRows = sanitizeData(targetRows, minRowCol);
         setRows(validRows);
