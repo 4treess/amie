@@ -89,7 +89,7 @@ const Mines = () => {
 
     socket.on('start_game', ({ room }) => {
       socket.emit('room_status_update', room);
-      handleStartNewGame();
+      handleStartNewGame(room);
     });
 
     socket.on('round_over', ({ room }) => {
@@ -139,7 +139,13 @@ const Mines = () => {
     }
 
   // 3. HANDLERS (Placeholders for your game logic)
-  const handleStartNewGame = () => {
+  const handleStartNewGame = (settings = null) => {
+    
+    const targetRows = settings?.rows ?? rows;
+    const targetCols = settings?.cols ?? cols;
+    const targetMines = settings?.mines ?? minesCount;
+    const targetRounds = settings?.rounds ?? roundsCount;
+
         // Prevents the data from exceeding its bounds, and prevents fractional amounts
         const sanitizeData = (data, min) => {
             data = Number(data)
@@ -227,13 +233,13 @@ const Mines = () => {
         setClicks(0);
         setRoundsCount(Number(roundsCount))
 
-        let validRows = sanitizeData(rows, minRowCol);
+        let validRows = sanitizeData(targetRows, minRowCol);
         setRows(validRows);
-        let validCols = sanitizeData(cols, minRowCol);
+        let validCols = sanitizeData(targetCols, minRowCol);
         setCols(validCols);
 
         const minMines = Math.floor(Math.sqrt(validRows*validCols -1));
-        let validMinesCount = sanitizeData(minesCount, minMines);
+        let validMinesCount = sanitizeData(targetMines, minMines);
 
         if(validMinesCount >= (validRows * validCols)){
             validMinesCount = validRows * validCols - 1;
@@ -459,7 +465,7 @@ const Mines = () => {
             {gameStatus !== "Lobby" && <button 
               onClick={() => {
                 setGameStatus("Lobby");
-                if (activeTab === 'multiplayer') handleLeaveMultiplayer();
+                if (activeTab === 'multiplayer');
               }}
               className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
             >
