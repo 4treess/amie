@@ -73,6 +73,7 @@ const Mines = () => {
     socket.on('room_status_update', (roomData) => {
       setPlayersList(roomData.players || {});
       if (roomData.gameState) setGameStatus(roomData.gameState);
+      setCurrentRound(roomData.rounds);
 
       const playerIDs = Object.keys(roomData.players || {});
       playerIDs.forEach(element => {
@@ -88,6 +89,7 @@ const Mines = () => {
 
     socket.on('start_game', ({ room }) => {
       socket.emit('room_status_update', room);
+      handleStartNewGame();
     });
 
     socket.on('round_over', ({ room }) => {
