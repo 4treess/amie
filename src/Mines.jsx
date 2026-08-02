@@ -263,49 +263,57 @@ const Mines = () => {
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
+  const handleMine = () => {
+    setGameStatus("Blown Up");
+    revealBoard();
 
-    const handleMine = () => {
-       setGameStatus("Blown Up");
-       revealBoard();
-       if (activeTab === 'multiplayer' && isJoined) {
+    if (activeTab === 'multiplayer' && isJoined) {
+      // Emit the current accumulated points on mine hit
+      socket.emit('endGame', {
+        roomID: RoomID,
+        playerID: playerID,
+        score: points, 
+        status: "Blown Up"
+      });
+    }
+  };
+
+  const handleSafeCell = () => {
+    let turnsLeft = rows * cols - minesCount - clicks;
+    let earnedPoints = (100 * minesCount) / turnsLeft;
+    
+    // 1. Calculate the actual new score value synchronously
+    const updatedPoints = points + earnedPoints;
+    
+    // 2. Update local state
+    setPoints(updatedPoints);
+
+    if (turnsLeft <= 1) {
+      setGameStatus("Victory");
+      revealBoard();
+
+      // 3. Emit victory with the exact updatedPoints variable
+      if (activeTab === 'multiplayer' && isJoined) {
         socket.emit('endGame', {
           roomID: RoomID,
           playerID: playerID,
-          score: newPoints,
-          status: "Blown Up"
+          score: updatedPoints,
+          status: "Victory"
         });
       }
     }
-
-    const handleSafeCell = () => {
-      let turnsLeft = rows*cols - minesCount - clicks;
-      if(turnsLeft <= 1){
-        setGameStatus("Victory");
-        revealBoard();
-        if (activeTab === 'multiplayer' && isJoined) {
-          socket.emit('endGame', {
-            roomID: RoomID,
-            playerID: playerID,
-            score: newPoints,
-            status: "Victory"
-          });
-        }
-      }
-      setPoints(points + 100*minesCount/(turnsLeft))
-    }
-
-    if(board[rowIndex][colIndex].visible === false){
-      board[rowIndex][colIndex].visible = true;
-      let nextStatus = gameStatus;
-      if(board[rowIndex][colIndex].isMine === true){
-        handleMine();
-        nextStatus = "Blown Up";
-      } else {
-        handleSafeCell();
-      }
-      setClicks(clicks + 1);
-    }
   };
+
+  if (!board[rowIndex][colIndex].visible) {
+    board[rowIndex][colIndex].visible = true;
+    if (board[rowIndex][colIndex].isMine) {
+      handleMine();
+    } else {
+      handleSafeCell();
+    }
+    setClicks(clicks + 1);
+  }
+};
 
   const handleJoinMultiplayer = (e) => {
     e.preventDefault();
