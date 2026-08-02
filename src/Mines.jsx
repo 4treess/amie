@@ -254,12 +254,6 @@ const Mines = () => {
         randomizeMines(tempBoard, validRows, validCols, validMinesCount);
 
         setBoard(tempBoard);
-
-        if (activeTab === 'multiplayer' && isJoined) {
-          socket.emit('start_game', {
-            roomID: RoomID, 
-          });
-        } 
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
@@ -475,7 +469,7 @@ const Mines = () => {
             {/* RESET / START BUTTON */}
             {
               <button 
-                onClick={activeTab === 'Multiplayer' ? gameStatus === "Lobby" ? socket.emit("startGame", {roomID: RoomID}) : handleStartNewGame : handleStartNewGame}
+                onClick={activeTab === 'multiplayer' ? gameStatus === "Lobby" ? socket.emit("startGame", {roomID: RoomID}) : handleStartNewGame : handleStartNewGame}
                 className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
               >
               {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
@@ -522,12 +516,6 @@ const Mines = () => {
               </div>
               <span className={`${roundsCount === 0 ? "absolute text-transparent" : "text-xs font-bold text-rose-500 uppercase tracking-wider"}`}>
                 {currentRound} / {roundsCount}
-              </span>
-              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                Moves:
-              </div>
-              <span className="text-xs font-bold text-rose-500 uppercase tracking-wider">
-                {clicks}
               </span>
               <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                 Points:
