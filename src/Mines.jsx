@@ -93,13 +93,12 @@ const Mines = () => {
     });
 
     socket.on('round_over', ({ room }) => {
-      socket.emit('room_status_update', room);
 
-      if(room.state != "Lobby"){
+      if(currentRound + 1 <= room.rounds){
         socket.emit("startGame", {roomID: RoomID});
       }
 
-      setGameStatus("Finished");
+      setGameStatus("Lobby");
       setPlayersList(room.players || {});
     });
 
@@ -280,7 +279,7 @@ const Mines = () => {
   };
 
   const handleSafeCell = () => {
-    let turnsLeft = rows * cols - minesCount - clicks;
+    let turnsLeft = rows * cols - minesCount - nukeCount - clicks;
     let earnedPoints = (100 * minesCount) / turnsLeft;
     
     // 1. Calculate the actual new score value synchronously
