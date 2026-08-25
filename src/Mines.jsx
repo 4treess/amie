@@ -93,12 +93,13 @@ const Mines = () => {
     });
 
     socket.on('round_over', ({ room }) => {
+      socket.emit('room_status_update', room);
 
-      if(currentRound + 1 <= room.rounds){
+      if(room.state != "Lobby"){
         socket.emit("startGame", {roomID: RoomID});
       }
 
-      setGameStatus("Lobby");
+      setGameStatus("Finished");
       setPlayersList(room.players || {});
     });
 
