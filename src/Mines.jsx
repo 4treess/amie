@@ -95,11 +95,8 @@ const Mines = () => {
     socket.on('round_over', ({ room }) => {
       socket.emit('room_status_update', room);
 
-      if (room.gameState === "Lobby") {
-        setGameStatus("Lobby");
-      } else {
-        setGameStatus("Finished");
-      }
+      setGameStatus("Finished");
+      setPlayersList(room.players || {});
     });
 
     return () => {
@@ -275,7 +272,7 @@ const Mines = () => {
         score: points, 
         status: "Blown Up",
         rounds: roundsCount,
-        currentRound: currentRound
+        currentRound: c
       });
     }
   };
@@ -300,9 +297,7 @@ const Mines = () => {
           roomID: RoomID,
           playerID: playerID,
           score: updatedPoints,
-          status: "Victory",
-          rounds: roundsCount,
-          currentRound: currentRound
+          status: "Victory"
         });
       }
     }
