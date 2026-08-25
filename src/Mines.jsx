@@ -98,7 +98,7 @@ const Mines = () => {
       if(room.state != "Lobby"){
         socket.emit("startGame", {roomID: RoomID});
       }
-      
+
       setGameStatus("Finished");
       setPlayersList(room.players || {});
     });
@@ -226,7 +226,7 @@ const Mines = () => {
           setPoints(0);
           setCurrentRound(1);
         }
-        if(gameStatus === "In Game"){
+        if(gameStatus === "In Game" || gameStatus === "Waiting For Other Players"){
             handleRoundEnd();
         } else{
           setGameStatus("In Game")
