@@ -270,8 +270,6 @@ const Mines = () => {
         playerID: playerID,
         score: points, 
         status: "Blown Up",
-        rounds: roundsCount,
-        currentRound: currentRound
       });
     }
   };
@@ -297,8 +295,6 @@ const Mines = () => {
           playerID: playerID,
           score: updatedPoints,
           status: "Victory",
-          rounds: roundsCount,
-          currentRound: currentRound
         });
       }
     }
