@@ -72,7 +72,6 @@ const Mines = () => {
 
     socket.on('room_status_update', (roomData) => {
       setPlayersList(roomData.players || {});
-      if (roomData.gameState) setGameStatus(roomData.gameState);
       setRoundsCount(roomData.rounds);
 
       const playerIDs = Object.keys(roomData.players || {});
