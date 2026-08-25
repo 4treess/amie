@@ -271,7 +271,7 @@ const Mines = () => {
         score: points, 
         status: "Blown Up",
         rounds: roundsCount,
-        currentRound: c
+        currentRound: currentRound
       });
     }
   };
@@ -296,7 +296,9 @@ const Mines = () => {
           roomID: RoomID,
           playerID: playerID,
           score: updatedPoints,
-          status: "Victory"
+          status: "Victory",
+          rounds: roundsCount,
+          currentRound: currentRound
         });
       }
     }
