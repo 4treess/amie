@@ -161,7 +161,7 @@ const Mines = () => {
         const handleRoundEnd = () => {
           if(targetRounds > 0){
             if(currentRound + 1 > targetRounds){
-              setGameStatus("Lobby");
+              setGameStatus("Lobby")
             } else {
               setCurrentRound(currentRound + 1);
             }
@@ -220,12 +220,14 @@ const Mines = () => {
         if(gameStatus === "Lobby"){
           setPoints(0);
           setCurrentRound(1);
-        }
-        if(gameStatus === "In Game" || gameStatus === "Waiting For Other Players"){
-            handleRoundEnd();
-        } else{
           setGameStatus("In Game")
+        }else{
+          handleRoundEnd();
+          if(gameStatus != "Lobby"){
+            setGameStatus("In Game")
+          }
         }
+
         setClicks(0);
         setRoundsCount(Number(targetRounds))
 
