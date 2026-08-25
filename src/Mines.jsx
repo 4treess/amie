@@ -269,7 +269,7 @@ const Mines = () => {
         roomID: RoomID,
         playerID: playerID,
         score: points, 
-        status: "Blown Up",
+        status: "Blown Up"
       });
     }
   };
@@ -294,7 +294,7 @@ const Mines = () => {
           roomID: RoomID,
           playerID: playerID,
           score: updatedPoints,
-          status: "Victory",
+          status: "Victory"
         });
       }
     }
