@@ -93,8 +93,6 @@ const Mines = () => {
 
     socket.on('round_over', ({ room }) => {
       socket.emit('room_status_update', room);
-
-      setGameStatus("Finished");
       setPlayersList(room.players || {});
     });
 
@@ -128,6 +126,7 @@ const Mines = () => {
       if(roundsCount > 0){
         if(currentRound + 1 > roundsCount){
           setGameStatus("Lobby");
+          socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
         } else {
           setCurrentRound(currentRound + 1);
         }
@@ -161,7 +160,8 @@ const Mines = () => {
         const handleRoundEnd = () => {
           if(targetRounds > 0){
             if(currentRound + 1 > targetRounds){
-              setGameStatus("Lobby")
+              setGameStatus("Lobby");
+              socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
             } else {
               setCurrentRound(currentRound + 1);
             }
@@ -221,10 +221,12 @@ const Mines = () => {
           setPoints(0);
           setCurrentRound(1);
           setGameStatus("In Game")
+          socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "In Game"});
         }else{
           handleRoundEnd();
           if(gameStatus != "Lobby"){
             setGameStatus("In Game")
+            socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "In Game"});
           }
         }
 
@@ -487,6 +489,7 @@ const Mines = () => {
             {gameStatus !== "Lobby" && <button 
               onClick={() => {
                 setGameStatus("Lobby");
+                socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
                 if (activeTab === 'multiplayer');
               }}
               className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
