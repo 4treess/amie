@@ -219,6 +219,7 @@ const Mines = () => {
 
         if(gameStatus === "Lobby"){
           setPoints(0);
+          socket.emit('resetPoints', {roomID: RoomID, playerID: playerID});
           setCurrentRound(1);
           setGameStatus("In Game")
           socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "In Game"});
