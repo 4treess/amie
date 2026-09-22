@@ -9,6 +9,12 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
   autoConnect: false
 });
 
+let previousPowerUp = "None";
+let shieldCount = 1;
+let pickaxeTriggerChance = 0;
+let minesLocatable = 0;
+let giftCount = 0;
+
 const Mines = () => {
   // Navigation State
   const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
@@ -34,11 +40,7 @@ const Mines = () => {
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
   const [selectedPowerUp, setSelectedPowerUp] = useState("Extra Mines");
-  let previousPowerUp = "None";
-  let shieldCount = 1;
-  let pickaxeTriggerChance = 0;
-  let minesLocatable = 0;
-  let giftCount = 0;
+  
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
