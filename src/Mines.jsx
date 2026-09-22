@@ -10,7 +10,7 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
 });
 
 let previousPowerUp = "None";
-let shieldCount = 1;
+let shieldCount = 0;
 let pickaxeTriggerChance = 0;
 let minesLocatable = 0;
 let giftCount = 0;
@@ -286,6 +286,13 @@ const Mines = () => {
           }
         }
 
+        const resetPowerUpUsages = () => {
+          for(powerUp in powerUps){
+            if(selectedPowerUp.type === powerUp.type)
+              selectedPowerUp.value = powerUp.value;
+          }
+        }
+
         if(gameStatus === "Lobby"){
           setPoints(0);
           socket.emit('resetPoints', {roomID: RoomID, playerID: playerID});
@@ -302,6 +309,7 @@ const Mines = () => {
 
         setClicks(0);
         setRoundsCount(Number(targetRounds))
+        resetPowerUpUsages();
 
         let validRows = sanitizeData(targetRows, minRowCol);
         setRows(validRows);
