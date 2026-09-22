@@ -140,20 +140,22 @@ const Mines = () => {
             giftCount += selectedPowerUp.value;
             break;
         }
-        switch(previousPowerUp.type){
-          case "Shield":
-            shieldCount -= previousPowerUp.value;
-            break;
-          case "Pickaxe":
-            pickaxeTriggerChance -= previousPowerUp.value;
-            break;
-          case "Mine Locator":
-            minesLocatable -= previousPowerUp.value;
-            break;
-          case "Gift":
-            giftCount -= previousPowerUp.value;
-            break;
-        }
+        if(previousPowerUp != "None")
+          switch(previousPowerUp.type){
+            case "Shield":
+              shieldCount -= previousPowerUp.value;
+              break;
+            case "Pickaxe":
+              pickaxeTriggerChance -= previousPowerUp.value;
+              break;
+            case "Mine Locator":
+              minesLocatable -= previousPowerUp.value;
+              break;
+            case "Gift":
+              giftCount -= previousPowerUp.value;
+              break;
+          }
+        previousPowerUp = selectedPowerUp;
       }
     }
   }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
@@ -334,6 +336,7 @@ const Mines = () => {
       shieldCount -= 1;
       board[rowIndex][colIndex].isShield = true;
       board[rowIndex][colIndex].isMine = false;
+      return;
     }
     setGameStatus("Blown Up");
     revealBoard();
