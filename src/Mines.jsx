@@ -623,14 +623,28 @@ const Mines = () => {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Power Ups</label>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
+                  Power Ups
+                </label>
                 <select
-                  value={selectedPowerUp}
-                  onChange={(e) => setSelectedPowerUp(e.target.value)}
+                  value={typeof selectedPowerUp === "object" ? selectedPowerUp?.type : selectedPowerUp}
+                  onChange={(e) => {
+                    const selectedType = e.target.value;
+                    const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+                    const foundObject = currentList.find((item) => item.type === selectedType);
+                    setSelectedPowerUp(foundObject || selectedType);
+                  }}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 >
-                  {activeTab === "multiplayer" ? multiplayerPowerUps.map((option) => <option key={option.type} value={option} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
-                                              : powerUps.map((option) => <option key={option.type} value={option} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
+                  {(activeTab === "multiplayer" ? multiplayerPowerUps : powerUps).map((option) => (
+                    <option
+                      key={option.type}
+                      value={option.type}
+                      className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"
+                    >
+                      {option.type}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>}
