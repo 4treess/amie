@@ -287,7 +287,7 @@ const Mines = () => {
         }
 
         const resetPowerUpUsages = () => {
-          for(powerUp in powerUps){
+          for(let powerUp in powerUps){
             if(selectedPowerUp.type === powerUp.type)
               selectedPowerUp.value = powerUp.value;
           }
