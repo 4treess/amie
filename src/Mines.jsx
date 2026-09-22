@@ -10,7 +10,7 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
 });
 
 let previousPowerUp = "None";
-let shieldCount = 0;
+let shieldCount = 1;
 let pickaxeTriggerChance = 0;
 let minesLocatable = 0;
 let giftCount = 0;
