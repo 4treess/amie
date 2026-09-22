@@ -288,6 +288,7 @@ const Mines = () => {
 
         const resetPowerUpUsages = () => {
           for(let powerUp in multiplayerPowerUps){
+            console.log(powerUp.type);
             if(selectedPowerUp.type === powerUp.type)
               selectedPowerUp.value = powerUp.value;
           }
