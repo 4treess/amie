@@ -22,8 +22,8 @@ const Mines = () => {
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
-  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}];
-  const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}];
+  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "None", value: 0}];
+  const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}, {type: "None", value: 0}];
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
@@ -39,7 +39,7 @@ const Mines = () => {
   const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
-  const [selectedPowerUp, setSelectedPowerUp] = useState({type: "Extra Mines", value: 2});
+  const [selectedPowerUp, setSelectedPowerUp] = useState({type: "None", value: 0});
   
 
   // Multiplayer States
@@ -629,8 +629,8 @@ const Mines = () => {
                   onChange={(e) => setSelectedPowerUp(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 >
-                  {activeTab === "multiplayer" ? multiplayerPowerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
-                                              : powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
+                  {activeTab === "multiplayer" ? multiplayerPowerUps.map((option) => <option key={option.type} value={option} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
+                                              : powerUps.map((option) => <option key={option.type} value={option} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
                 </select>
               </div>
             </div>}
