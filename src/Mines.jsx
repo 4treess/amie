@@ -35,7 +35,7 @@ const Mines = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const [selectedPowerUp, setSelectedPowerUp] = useState("Extra Mines");
   let previousPowerUp = "None";
-  let shieldCount = 0;
+  let shieldCount = 1;
   let pickaxeTriggerChance = 0;
   let minesLocatable = 0;
   let giftCount = 0;
