@@ -287,12 +287,19 @@ const Mines = () => {
         }
 
         const resetPowerUpUsages = () => {
-          for(let powerUp in multiplayerPowerUps){
-            console.log(powerUp.type);
-            if(selectedPowerUp.type === powerUp.type)
-              selectedPowerUp.value = powerUp.value;
+          const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+          const match = currentList.find((p) => p.type === selectedPowerUp.type);
+
+          if (match) {
+            // Reset global power-up counters
+            shieldCount = match.type === "Shield" ? match.value : 0;
+            pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+            minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+            giftCount = match.type === "Gift" ? match.value : 0;
+
+            setSelectedPowerUp({ ...match });
           }
-        }
+        };
 
         if(gameStatus === "Lobby"){
           setPoints(0);
@@ -451,7 +458,8 @@ const Mines = () => {
     if(pickaxeTriggerChance > 0){
       handlePickaxe(pickaxeTriggerChance);
     }
-    setClicks(clicks + 1);
+    if(!board[rowIndex][colIndex].isShield)
+      setClicks(clicks + 1);
   }
 };
 
