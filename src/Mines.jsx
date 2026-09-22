@@ -30,7 +30,6 @@ const Mines = () => {
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
   const [minesCount, setMinesCount] = useState(4);
-  const [giftCount, setGiftCount] = useState(0);
   const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
@@ -39,6 +38,7 @@ const Mines = () => {
   let shieldCount = 0;
   let pickaxeTriggerChance = 0;
   let minesLocatable = 0;
+  let giftCount = 0;
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
