@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight, Users, User } from 'lucide-react';
+import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight, Users, User, Pickaxe } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -16,6 +16,7 @@ const Mines = () => {
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
+  const powerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}];
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
@@ -487,14 +488,13 @@ const Mines = () => {
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Power Ups</label>
-                <input 
-                  type="number" 
-                  min="0"
-                  max="10"
-                  value={0}
+                <select
+                  value={selectedPowerUp}
                   onChange={(e) => setSelectedPowerUp(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
-                />
+                >
+                  {powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
+                </select>
               </div>
             </div>}
 
