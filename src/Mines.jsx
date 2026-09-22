@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bomb, RefreshCw, Trophy, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, Flower2, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight, Users, User, Pickaxe } from 'lucide-react';
+import { Bomb, RefreshCw, Gift, Heart, HeartCrack, Gem, Egg, EggFried, Smile, Frown, Bone, ShieldPlus, FireExtinguisher, Flame, Ham, CircleArrowLeft, ArrowRight, Users, User, Radiation } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -16,10 +16,14 @@ const Mines = () => {
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
-  const powerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}];
+  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}];
+  const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}];
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
+  const [NukeIcon, setNukeIcon] = useState(() => Radiation)
+  const [GiftIcon, setGiftIcon] = useState(() => Gift)
+  const [ShieldIcon, setShieldIcon] = useState(() => ShieldPlus)
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
@@ -30,7 +34,11 @@ const Mines = () => {
   const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
-  const [selectedPowerUp, setSelectedPowerUp] = useState(0);
+  const [selectedPowerUp, setSelectedPowerUp] = useState("Extra Mines");
+  let previousPowerUp = "None";
+  let shieldCount = 0;
+  let pickaxeTriggerChance = 0;
+  let minesLocatable = 0;
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
@@ -50,12 +58,12 @@ const Mines = () => {
   // 2. BOARD STATE (Dummy visual layout to start)
   const [board, setBoard] = useState([
     [
-      { row: 0, col: 0, isMine: false, visible: true },
-      { row: 0, col: 1, isMine: false, visible: true },
+      { row: 0, col: 0, isMine: false, isGift: false, isNuke: false, isShield: false, visible: true},
+      { row: 0, col: 1, isMine: false, isGift: false, isNuke: false, isShield: false, visible: true},
     ],
     [
-      { row: 1, col: 0, isMine: false, visible: true },
-      { row: 1, col: 1, isMine: true, visible: true },
+      { row: 1, col: 0, isMine: false, isGift: false, isNuke: false, isShield: false, visible: true},
+      { row: 1, col: 1, isMine: true, isGift: false, isNuke: false, isShield: false, visible: true},
     ]
   ]);
 
@@ -83,7 +91,6 @@ const Mines = () => {
           if (roomData.players[element].cols) setCols(roomData.players[element].cols);
           if (roomData.players[element].mines) setMinesCount(roomData.players[element].mines);
           if (roomData.players[element].nukes !== undefined) setNukeCount(roomData.players[element].nukes);
-          if (roomData.players[element].gifts !== undefined) setGiftCount(roomData.players[element].gifts);
         }
       });
     });
@@ -114,10 +121,42 @@ const Mines = () => {
         rows: rows,
         cols: cols,
         mines: minesCount,
-        rounds: roundsCount
+        rounds: roundsCount,
+        selectedPowerUp: selectedPowerUp,
+        previousPowerUp: previousPowerUp
       });
+      if(previousPowerUp != selectedPowerUp){
+        switch(selectedPowerUp.type){
+          case "Shield":
+            shieldCount += selectedPowerUp.value;
+            break;
+          case "Pickaxe":
+            pickaxeTriggerChance += selectedPowerUp.value;
+            break;
+          case "Mine Locator":
+            minesLocatable += selectedPowerUp.value;
+            break;
+          case "Gift":
+            giftCount += selectedPowerUp.value;
+            break;
+        }
+        switch(previousPowerUp.type){
+          case "Shield":
+            shieldCount -= previousPowerUp.value;
+            break;
+          case "Pickaxe":
+            pickaxeTriggerChance -= previousPowerUp.value;
+            break;
+          case "Mine Locator":
+            minesLocatable -= previousPowerUp.value;
+            break;
+          case "Gift":
+            giftCount -= previousPowerUp.value;
+            break;
+        }
+      }
     }
-  }, [rows, cols, minesCount, roundsCount, isJoined, activeTab, RoomID]);
+  }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
 
   const revealBoard = () => {
       for(const i of board){
@@ -156,6 +195,9 @@ const Mines = () => {
             row: r,
             col: c,
             isMine: false,
+            isGift: false,
+            isNuke: false,
+            isShield: false,
             visible: false,
         });
 
@@ -171,7 +213,7 @@ const Mines = () => {
         };
 
         // Randomizes the locations of the mines on the game board
-        const randomizeMines = (board, rows, cols, mines) => {
+        const randomizeBoard = (board, rows, cols, mines) => {
             let len = rows*cols;
             let listOfVals = Array.from({length: len}, (_, index) => index);
             for(let i = 0; i < mines; i++){
@@ -181,7 +223,28 @@ const Mines = () => {
                 let row = Math.floor(number / cols);
                 let col = Math.floor(number % cols);
 
-                board[row][col].isMine = true;
+                if(i >= mines - nukeCount){
+                  board[row][col].isNuke = true;
+                } else{
+                  if(i < minesLocatable){
+                    board[row][col].visible = true;
+                  }
+                  board[row][col].isMine = true;
+                }
+
+                listOfVals.splice(index, 1);
+                len--;
+            }
+
+            let length = len;
+            for(let i = 0; i < min(giftCount, length); i++){
+                let index = Math.floor(Math.random() * (len));
+                let number = listOfVals[index]
+
+                let row = Math.floor(number / cols);
+                let col = Math.floor(number % cols);
+
+                board[row][col].isGift = true;
 
                 listOfVals.splice(index, 1);
                 len--;
@@ -260,13 +323,18 @@ const Mines = () => {
         }
 
         randomizeIcons();
-        randomizeMines(tempBoard, validRows, validCols, validMinesCount);
+        randomizeBoard(tempBoard, validRows, validCols, validMinesCount);
 
         setBoard(tempBoard);
   };
 
   const handleCellClick = (rowIndex, colIndex) => {
   const handleMine = () => {
+    if(shieldCount > 0){
+      shieldCount -= 1;
+      board[rowIndex][colIndex].isShield = true;
+      board[rowIndex][colIndex].isMine = false;
+    }
     setGameStatus("Blown Up");
     revealBoard();
 
@@ -281,9 +349,27 @@ const Mines = () => {
     }
   };
 
-  const handleSafeCell = () => {
+  const handleNuke = () => {
+    setGameStatus("Obliterated");
+    revealBoard();
+
+    let newPoints = points/2;
+    setPoints(newPoints);
+
+    if (activeTab === 'multiplayer' && isJoined) {
+      // Emit the current accumulated points on mine hit
+      socket.emit('endGame', {
+        roomID: RoomID,
+        playerID: playerID,
+        score: newPoints, 
+        status: "Obliterated"
+      });
+    }
+  };
+
+  const handleSafeCell = (multiplier) => {
     let turnsLeft = rows * cols - minesCount - nukeCount - clicks;
-    let earnedPoints = (100 * minesCount) / turnsLeft;
+    let earnedPoints = (100 * minesCount * multiplier) / turnsLeft;
     
     // 1. Calculate the actual new score value synchronously
     const updatedPoints = points + earnedPoints;
@@ -307,12 +393,49 @@ const Mines = () => {
     }
   };
 
+  const handlePickaxe = (chance) => {
+    let len = rows*cols;
+    let listOfVals = Array.from({length: len}, (_, index) => index);
+    if(Math.random() <= chance){
+      for(let i = 0; i < rows*cols; i++){
+          let index = Math.floor(Math.random() * (len));
+          let number = listOfVals[index]
+
+          let row = Math.floor(number / cols);
+          let col = Math.floor(number % cols);
+
+          if(board[row][col].isMine || board[row][col].isNuke || board[row][col].visible){
+            listOfVals.splice(index, 1);
+            len--;
+          } else {
+            if(board[rowIndex][colIndex].isGift){
+              handleSafeCell(10)
+            } else{
+              handleSafeCell(1);
+            }
+            return;
+          }  
+      }
+    }
+  }
+
   if (!board[rowIndex][colIndex].visible) {
     board[rowIndex][colIndex].visible = true;
     if (board[rowIndex][colIndex].isMine) {
       handleMine();
     } else {
-      handleSafeCell();
+      if(board[rowIndex][colIndex].isNuke){
+        handleNuke();
+      } else {
+        if(board[rowIndex][colIndex].isGift){
+          handleSafeCell(10)
+        } else{
+          handleSafeCell(1);
+        }
+      }
+    }
+    if(pickaxeTriggerChance > 0){
+      handlePickaxe(pickaxeTriggerChance);
     }
     setClicks(clicks + 1);
   }
@@ -493,7 +616,8 @@ const Mines = () => {
                   onChange={(e) => setSelectedPowerUp(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 >
-                  {powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
+                  {activeTab === "multiplayer" ? powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
+                                              : multiplayerPowerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
                 </select>
               </div>
             </div>}
@@ -546,7 +670,11 @@ const Mines = () => {
                       }`}
                     >
                       {/* Visual content of the cell */}
-                      {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" ? "text-red-500" : "text-black-500"}/>) : '?'}
+                      {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isNuke ? <NukeIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isGift ? <GiftIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isShield ? <ShieldIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-black-500"}/>)))) : '?'}
                     </button>
                   ))
                 )}
