@@ -616,8 +616,8 @@ const Mines = () => {
                   onChange={(e) => setSelectedPowerUp(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 >
-                  {activeTab === "multiplayer" ? powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
-                                              : multiplayerPowerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
+                  {activeTab === "multiplayer" ? multiplayerPowerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>) 
+                                              : powerUps.map((option) => <option key={option.type} value={option.type} className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none"> {option.type} </option>)}
                 </select>
               </div>
             </div>}
