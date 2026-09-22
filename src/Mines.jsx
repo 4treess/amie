@@ -29,6 +29,7 @@ const Mines = () => {
   const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
+  const [selectedPowerUp, setSelectedPowerUp] = useState(0);
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
@@ -481,6 +482,17 @@ const Mines = () => {
                   max="10"
                   value={roundsCount} 
                   onChange={(e) => setRoundsCount(e.target.value)}
+                  className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Power Ups</label>
+                <input 
+                  type="number" 
+                  min="0"
+                  max="10"
+                  value={0}
+                  onChange={(e) => setSelectedPowerUp(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 />
               </div>
