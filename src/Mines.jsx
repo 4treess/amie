@@ -6,7 +6,8 @@ import io from 'socket.io-client';
 
 // Socket instance initialized outside component to prevent multiple connections on re-render
 const socket = io('https://amie-server-mdhz.onrender.com', {
-  autoConnect: false
+  autoConnect: false,
+  transports: ['websocket']
 });
 
 let previousPowerUp = "None";
@@ -22,7 +23,7 @@ const Mines = () => {
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
-  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "None", value: 0}];
+  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 3}, {type: "None", value: 0}];
   const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}, {type: "None", value: 0}];
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
