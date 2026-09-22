@@ -237,7 +237,7 @@ const Mines = () => {
             }
 
             let length = len;
-            for(let i = 0; i < min(giftCount, length); i++){
+            for(let i = 0; i < Math.min(giftCount, length); i++){
                 let index = Math.floor(Math.random() * (len));
                 let number = listOfVals[index]
 
