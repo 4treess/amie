@@ -39,7 +39,7 @@ const Mines = () => {
   const [nukeCount, setNukeCount] = useState(0);
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
-  const [selectedPowerUp, setSelectedPowerUp] = useState("Extra Mines");
+  const [selectedPowerUp, setSelectedPowerUp] = useState({type: "Extra Mines", value: 2});
   
 
   // Multiplayer States
@@ -287,7 +287,7 @@ const Mines = () => {
         }
 
         const resetPowerUpUsages = () => {
-          for(let powerUp in powerUps){
+          for(let powerUp in multiplayerPowerUps){
             if(selectedPowerUp.type === powerUp.type)
               selectedPowerUp.value = powerUp.value;
           }
