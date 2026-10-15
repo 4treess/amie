@@ -100,8 +100,15 @@ const Mines = () => {
     });
 
     socket.on('start_game', ({ room }) => {
-      socket.emit('room_status_update', room);
-      handleStartNewGame(room);
+      const myData = room.players[playerID];
+      if (myData) {
+        if (myData.rows) setRows(myData.rows);
+        if (myData.cols) setCols(myData.cols);
+        if (myData.mines) setMinesCount(myData.mines);
+        if (myData.nukes !== undefined) setNukeCount(myData.nukes);
+      }
+
+      handleStartNewGame(myData);
     });
 
     socket.on('round_over', ({ room }) => {
@@ -188,7 +195,10 @@ useEffect(() => {
     const targetRows = settings?.rows ?? rows;
     const targetCols = settings?.cols ?? cols;
     const targetMines = settings?.mines ?? minesCount;
+    const targetNukes = settings?.nukes ?? nukeCount; // 👈 Pull target nukes
     const targetRounds = settings?.rounds ?? roundsCount;
+
+    setNukeCount(targetNukes);
 
         // Prevents the data from exceeding its bounds, and prevents fractional amounts
         const sanitizeData = (data, min) => {
