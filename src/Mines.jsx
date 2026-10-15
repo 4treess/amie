@@ -97,8 +97,12 @@ const Mines = () => {
     socket.on('start_game', ({ room }) => {
       const myData = room.players[playerID];
       if (myData) {
-        handleStartNewGame(myData);
+        setRows(myData.rows);
+        setCols(myData.cols);
+        setMinesCount(myData.mines);
+        setNukeCount(myData.nukes);
       }
+      handleStartNewGame(myData);
     });
 
     socket.on('round_over', (room) => {
