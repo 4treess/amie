@@ -97,12 +97,8 @@ const Mines = () => {
     socket.on('start_game', ({ room }) => {
       const myData = room.players[playerID];
       if (myData) {
-        setRows(myData.rows);
-        setCols(myData.cols);
-        setMinesCount(myData.mines);
-        setNukeCount(myData.nukes);
+        handleStartNewGame(myData);
       }
-      handleStartNewGame(myData);
     });
 
     socket.on('round_over', (room) => {
@@ -179,7 +175,12 @@ const Mines = () => {
     const targetNukes = settings?.nukes ?? nukeCount;
     const targetRounds = settings?.rounds ?? roundsCount;
 
+    // Sync local state for UI display
+    setRows(targetRows);
+    setCols(targetCols);
+    setMinesCount(targetMines);
     setNukeCount(targetNukes);
+    setRoundsCount(targetRounds);
 
     const sanitizeData = (data, min) => {
       data = Number(data);
@@ -302,17 +303,13 @@ const Mines = () => {
     resetPowerUpUsages();
 
     let validRows = sanitizeData(targetRows, minRowCol);
-    setRows(validRows);
     let validCols = sanitizeData(targetCols, minRowCol);
-    setCols(validCols);
+    let validMinesCount = Number(targetMines);
 
-    const minMines = Math.floor(Math.sqrt(validRows * validCols - 1));
-    let validMinesCount = sanitizeData(targetMines, minMines);
-
+    // Guard limits
     if (validMinesCount >= (validRows * validCols - targetNukes)) {
       validMinesCount = validRows * validCols - targetNukes - 1;
     }
-    setMinesCount(validMinesCount);
 
     let tempBoard = [];
     for (let i = 0; i < validRows; i++) {
