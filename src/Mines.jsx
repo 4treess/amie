@@ -118,51 +118,39 @@ const Mines = () => {
   }, [isJoined, activeTab, RoomID, playerID, nickname]);
 
   // Sync settings when inputs change in multiplayer
-  useEffect(() => {
-    if (isJoined && activeTab === 'multiplayer' && RoomID) {
-      if(previousPowerUp != selectedPowerUp){
-        switch(selectedPowerUp.type){
-          case "Shield":
-            shieldCount += selectedPowerUp.value;
-            break;
-          case "Pickaxe":
-            pickaxeTriggerChance += selectedPowerUp.value;
-            break;
-          case "Mine Locator":
-            minesLocatable += selectedPowerUp.value;
-            break;
-          case "Gift":
-            giftCount += selectedPowerUp.value;
-            break;
-        }
-        if(previousPowerUp != "None")
-          switch(previousPowerUp.type){
-            case "Shield":
-              shieldCount -= previousPowerUp.value;
-              break;
-            case "Pickaxe":
-              pickaxeTriggerChance -= previousPowerUp.value;
-              break;
-            case "Mine Locator":
-              minesLocatable -= previousPowerUp.value;
-              break;
-            case "Gift":
-              giftCount -= previousPowerUp.value;
-              break;
-          }
+useEffect(() => {
+  if (isJoined && activeTab === 'multiplayer' && RoomID) {
+    if (previousPowerUp !== selectedPowerUp.type) {
+      
+      switch (previousPowerUp) {
+        case "Shield": shieldCount -= 1; break;
+        case "Pickaxe": pickaxeTriggerChance -= 1; break;
+        case "Mine Locator": minesLocatable -= 1; break;
+        case "Gift": giftCount -= 10; break;
+        default: break;
       }
-      socket.emit('changeSettings', {
-        roomID: RoomID,
-        rows: rows,
-        cols: cols,
-        mines: minesCount,
-        rounds: roundsCount,
-        selectedPowerUp: selectedPowerUp,
-        previousPowerUp: previousPowerUp
-      });
-      previousPowerUp = selectedPowerUp;
+      switch (selectedPowerUp.type) {
+        case "Shield": shieldCount += selectedPowerUp.value; break;
+        case "Pickaxe": pickaxeTriggerChance += selectedPowerUp.value; break;
+        case "Mine Locator": minesLocatable += selectedPowerUp.value; break;
+        case "Gift": giftCount += selectedPowerUp.value; break;
+        default: break;
+      }
+
+      previousPowerUp = selectedPowerUp.type;
     }
-  }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
+
+    socket.emit('changeSettings', {
+      roomID: RoomID,
+      rows: rows,
+      cols: cols,
+      mines: minesCount,
+      rounds: roundsCount,
+      selectedPowerUp: selectedPowerUp,
+      previousPowerUp: previousPowerUp
+    });
+  }
+}, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
 
   const revealBoard = () => {
       for(const i of board){
