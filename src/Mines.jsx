@@ -4,7 +4,6 @@ import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
-// Socket instance initialized outside component to prevent multiple connections on re-render
 const socket = io('https://amie-server-mdhz.onrender.com', {
   autoConnect: false,
   transports: ['websocket']
@@ -17,11 +16,9 @@ let minesLocatable = 0;
 let giftCount = 0;
 
 const Mines = () => {
-  // Navigation State
-  const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
+  const [activeTab, setActiveTab] = useState('singleplayer');
   const [isJoined, setIsJoined] = useState(false);
 
-  // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
   const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 1}, {type: "None", value: 0}];
   const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}, {type: "None", value: 0}];
@@ -43,13 +40,10 @@ const Mines = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const [selectedPowerUp, setSelectedPowerUp] = useState({type: "None", value: 0});
   
-
-  // Multiplayer States
   const [RoomID, setRoomID] = useState("");
   const [nickname, setNickname] = useState("");
   const [playersList, setPlayersList] = useState({});
 
-  // Persistent Player ID
   const [playerID] = useState(() => {
     let saved = localStorage.getItem('mines_player_id');
     if (!saved) {
@@ -59,7 +53,6 @@ const Mines = () => {
     return saved;
   });
 
-  // 2. BOARD STATE (Dummy visual layout to start)
   const [board, setBoard] = useState([
     [
       { row: 0, col: 0, isMine: false, isGift: false, isNuke: false, isShield: false, visible: true},
@@ -71,7 +64,7 @@ const Mines = () => {
     ]
   ]);
 
-  // Socket connection lifecycle for Multiplayer Tab
+  // Socket Lifecycle
   useEffect(() => {
     if (!isJoined || activeTab !== 'multiplayer') return;
 
@@ -89,31 +82,27 @@ const Mines = () => {
       setPlayersList(roomData.players || {});
       setRoundsCount(roomData.rounds);
 
-      const playerIDs = Object.keys(roomData.players || {});
-      playerIDs.forEach(element => {
-        if(element === playerID){
-          if (roomData.players[element].rows) setRows(roomData.players[element].rows);
-          if (roomData.players[element].cols) setCols(roomData.players[element].cols);
-          if (roomData.players[element].mines) setMinesCount(roomData.players[element].mines);
-          if (roomData.players[element].nukes !== undefined) setNukeCount(roomData.players[element].nukes);
-        }
-      });
-    });
-
-    socket.on('start_game', ({ room }) => {
-      const myData = room.players[playerID];
-      if (myData) {
+      const myData = roomData.players?.[playerID];
+      if (myData && roomData.state === "Lobby") {
         if (myData.rows) setRows(myData.rows);
         if (myData.cols) setCols(myData.cols);
         if (myData.mines) setMinesCount(myData.mines);
         if (myData.nukes !== undefined) setNukeCount(myData.nukes);
       }
+    });
 
+    socket.on('start_game', ({ room }) => {
+      const myData = room.players[playerID];
+      if (myData) {
+        setRows(myData.rows);
+        setCols(myData.cols);
+        setMinesCount(myData.mines);
+        setNukeCount(myData.nukes);
+      }
       handleStartNewGame(myData);
     });
 
-    socket.on('round_over', ({ room }) => {
-      socket.emit('room_status_update', room);
+    socket.on('round_over', (room) => {
       setPlayersList(room.players || {});
     });
 
@@ -126,350 +115,323 @@ const Mines = () => {
   }, [isJoined, activeTab, RoomID, playerID, nickname]);
 
   // Sync settings when inputs change in multiplayer
-useEffect(() => {
-  if (isJoined && activeTab === 'multiplayer' && RoomID) {
-    if (previousPowerUp !== selectedPowerUp.type) {
-      
-      switch (previousPowerUp) {
-        case "Shield": shieldCount -= 1; break;
-        case "Pickaxe": pickaxeTriggerChance -= 1; break;
-        case "Mine Locator": minesLocatable -= 1; break;
-        case "Gift": giftCount -= 10; break;
-        default: break;
-      }
-      switch (selectedPowerUp.type) {
-        case "Shield": shieldCount += selectedPowerUp.value; break;
-        case "Pickaxe": pickaxeTriggerChance += selectedPowerUp.value; break;
-        case "Mine Locator": minesLocatable += selectedPowerUp.value; break;
-        case "Gift": giftCount += selectedPowerUp.value; break;
-        default: break;
+  useEffect(() => {
+    if (isJoined && activeTab === 'multiplayer' && RoomID) {
+      if (previousPowerUp !== selectedPowerUp.type) {
+        switch (previousPowerUp) {
+          case "Shield": shieldCount -= 1; break;
+          case "Pickaxe": pickaxeTriggerChance -= 1; break;
+          case "Mine Locator": minesLocatable -= 1; break;
+          case "Gift": giftCount -= 10; break;
+          default: break;
+        }
+        switch (selectedPowerUp.type) {
+          case "Shield": shieldCount += selectedPowerUp.value; break;
+          case "Pickaxe": pickaxeTriggerChance += selectedPowerUp.value; break;
+          case "Mine Locator": minesLocatable += selectedPowerUp.value; break;
+          case "Gift": giftCount += selectedPowerUp.value; break;
+          default: break;
+        }
+
+        previousPowerUp = selectedPowerUp.type;
       }
 
-      previousPowerUp = selectedPowerUp.type;
+      socket.emit('changeSettings', {
+        roomID: RoomID,
+        rows: rows,
+        cols: cols,
+        mines: minesCount,
+        rounds: roundsCount,
+        selectedPowerUp: selectedPowerUp,
+        previousPowerUp: previousPowerUp,
+        playerID: playerID
+      });
     }
+  }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
 
-    socket.emit('changeSettings', {
-      roomID: RoomID,
-      rows: rows,
-      cols: cols,
-      mines: minesCount,
-      rounds: roundsCount,
-      selectedPowerUp: selectedPowerUp,
-      previousPowerUp: previousPowerUp,
-      playerID: playerID
-    });
-  }
-}, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
+  // Sync selection between tabs
+  useEffect(() => {
+    const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+    const match = currentList.find((p) => p.type === selectedPowerUp.type);
 
-// Sync power-up object values between Singleplayer and Multiplayer definitions when switching tabs
-useEffect(() => {
-  const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-  const match = currentList.find((p) => p.type === selectedPowerUp.type);
-
-  if (match) {
-    setSelectedPowerUp(match);
-  } else {
-    // If the powerup doesn't exist in the new mode (e.g. "Extra Mines" switching to singleplayer), set the default to None
-    setSelectedPowerUp({ type: "None", value: 0 });
-  }
-}, [activeTab]);
+    if (match) {
+      setSelectedPowerUp(match);
+    } else {
+      setSelectedPowerUp({ type: "None", value: 0 });
+    }
+  }, [activeTab]);
 
   const revealBoard = () => {
-      for(const i of board){
-          for(const j of i){
-              j.visible = true;
-          }
-      }
-      if(roundsCount > 0){
-        if(currentRound + 1 > roundsCount){
-          setGameStatus("Lobby");
-          socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
-        } else {
-          setCurrentRound(currentRound + 1);
-        }
+    for (const i of board) {
+      for (const j of i) {
+        j.visible = true;
       }
     }
+  };
 
-  // 3. HANDLERS
   const handleStartNewGame = (settings = null) => {
-    
     const targetRows = settings?.rows ?? rows;
     const targetCols = settings?.cols ?? cols;
     const targetMines = settings?.mines ?? minesCount;
-    const targetNukes = settings?.nukes ?? nukeCount; // 👈 Pull target nukes
+    const targetNukes = settings?.nukes ?? nukeCount;
     const targetRounds = settings?.rounds ?? roundsCount;
 
     setNukeCount(targetNukes);
 
-        // Prevents the data from exceeding its bounds, and prevents fractional amounts
-        const sanitizeData = (data, min) => {
-            data = Number(data)
-            if(data > min){
-                return Math.floor(data);
-            }
-            return min;
-        }
-        
-        const createCell = (r, c) => ({
-            row: r,
-            col: c,
-            isMine: false,
-            isGift: false,
-            isNuke: false,
-            isShield: false,
-            visible: false,
-        });
+    const sanitizeData = (data, min) => {
+      data = Number(data);
+      if (data > min) return Math.floor(data);
+      return min;
+    };
+    
+    const createCell = (r, c) => ({
+      row: r,
+      col: c,
+      isMine: false,
+      isGift: false,
+      isNuke: false,
+      isShield: false,
+      visible: false,
+    });
 
-        const handleRoundEnd = () => {
-          if(targetRounds > 0){
-            if(currentRound + 1 > targetRounds){
-              setGameStatus("Lobby");
-              socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
-            } else {
-              setCurrentRound(currentRound + 1);
-            }
+    const randomizeBoard = (boardArr, rCount, cCount, mCount, nCount) => {
+      let len = rCount * cCount;
+      let listOfVals = Array.from({ length: len }, (_, index) => index);
+      
+      // 1. Place Mines and Nukes accurately
+      for (let i = 0; i < mCount + nCount; i++) {
+        if (len <= 0) break;
+        let index = Math.floor(Math.random() * len);
+        let number = listOfVals[index];
+
+        let r = Math.floor(number / cCount);
+        let c = Math.floor(number % cCount);
+
+        if (i < nCount) {
+          boardArr[r][c].isNuke = true;
+        } else {
+          if ((i - nCount) < minesLocatable) {
+            boardArr[r][c].visible = true;
           }
-        };
-
-        // Randomizes the locations of the mines on the game board
-        const randomizeBoard = (board, rows, cols, mines) => {
-            let len = rows*cols;
-            let listOfVals = Array.from({length: len}, (_, index) => index);
-            for(let i = 0; i < mines; i++){
-                let index = Math.floor(Math.random() * (len));
-                let number = listOfVals[index]
-
-                let row = Math.floor(number / cols);
-                let col = Math.floor(number % cols);
-
-                if(i >= mines - nukeCount){
-                  board[row][col].isNuke = true;
-                } else{
-                  if(i < minesLocatable){
-                    board[row][col].visible = true;
-                  }
-                  board[row][col].isMine = true;
-                }
-
-                listOfVals.splice(index, 1);
-                len--;
-            }
-
-            let length = len;
-            for(let i = 0; i < Math.min(giftCount, length); i++){
-                let index = Math.floor(Math.random() * (len));
-                let number = listOfVals[index]
-
-                let row = Math.floor(number / cols);
-                let col = Math.floor(number % cols);
-
-                board[row][col].isGift = true;
-
-                listOfVals.splice(index, 1);
-                len--;
-            }
+          boardArr[r][c].isMine = true;
         }
 
-        const randomizeIcons = () => {
-          let randomNum = Math.floor(Math.random() * 101)
-          if(randomNum < 50){
-            if(randomNum < 25){
-              setSafeIcon(() => Heart);
-              setBombIcon(() => HeartCrack);
-            }else{
-              setSafeIcon(() => Gem);
-              setBombIcon(() => Bomb);
-            }
-          }else{
-            if(randomNum < 76){
-              if(randomNum > 50){
-                setSafeIcon(() => Smile);
-                setBombIcon(() => Frown);
-              }else{
-                setSafeIcon(() => FireExtinguisher);
-                setBombIcon(() => Flame);
-              }
-            } else{
-              if(randomNum === 100){
-                setSafeIcon(() => Egg);
-                setBombIcon(() => EggFried);
-              } else{
-                setSafeIcon(() => Ham);
-                setBombIcon(() => Bone);
-              }
-            }
+        listOfVals.splice(index, 1);
+        len--;
+      }
+
+      // 2. Place Gifts
+      let availableSpace = len;
+      for (let i = 0; i < Math.min(giftCount, availableSpace); i++) {
+        let index = Math.floor(Math.random() * len);
+        let number = listOfVals[index];
+
+        let r = Math.floor(number / cCount);
+        let c = Math.floor(number % cCount);
+
+        boardArr[r][c].isGift = true;
+
+        listOfVals.splice(index, 1);
+        len--;
+      }
+    };
+
+    const randomizeIcons = () => {
+      let randomNum = Math.floor(Math.random() * 101);
+      if (randomNum < 50) {
+        if (randomNum < 25) {
+          setSafeIcon(() => Heart);
+          setBombIcon(() => HeartCrack);
+        } else {
+          setSafeIcon(() => Gem);
+          setBombIcon(() => Bomb);
+        }
+      } else {
+        if (randomNum < 76) {
+          if (randomNum > 50) {
+            setSafeIcon(() => Smile);
+            setBombIcon(() => Frown);
+          } else {
+            setSafeIcon(() => FireExtinguisher);
+            setBombIcon(() => Flame);
+          }
+        } else {
+          if (randomNum === 100) {
+            setSafeIcon(() => Egg);
+            setBombIcon(() => EggFried);
+          } else {
+            setSafeIcon(() => Ham);
+            setBombIcon(() => Bone);
           }
         }
+      }
+    };
 
-      const resetPowerUpUsages = () => {
-        const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-        const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
+    const resetPowerUpUsages = () => {
+      const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+      const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
 
-        // Reset global power-up counters
-        shieldCount = match.type === "Shield" ? match.value : 0;
-        pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
-        minesLocatable = match.type === "Mine Locator" ? match.value : 0;
-        giftCount = match.type === "Gift" ? match.value : 0;
-      };
+      shieldCount = match.type === "Shield" ? match.value : 0;
+      pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+      minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+      giftCount = match.type === "Gift" ? match.value : 0;
+    };
 
-        if(gameStatus === "Lobby"){
-          setPoints(0);
-          socket.emit('resetPoints', {roomID: RoomID, playerID: playerID});
-          setCurrentRound(1);
-          setGameStatus("In Game")
-          socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "In Game"});
-        }else{
-          handleRoundEnd();
-          if(gameStatus != "Lobby"){
-            setGameStatus("In Game")
-            socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "In Game"});
-          }
-        }
+    if (gameStatus === "Lobby") {
+      setPoints(0);
+      socket.emit('resetPoints', { roomID: RoomID, playerID: playerID });
+      setCurrentRound(1);
+      setGameStatus("In Game");
+      socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
+    } else {
+      if (targetRounds > 0 && currentRound >= targetRounds) {
+        setGameStatus("Lobby");
+        socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "Lobby" });
+      } else {
+        setCurrentRound((prev) => prev + 1);
+        setGameStatus("In Game");
+        socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
+      }
+    }
 
-        setClicks(0);
-        setRoundsCount(Number(targetRounds))
-        resetPowerUpUsages();
+    setClicks(0);
+    setRoundsCount(Number(targetRounds));
+    resetPowerUpUsages();
 
-        let validRows = sanitizeData(targetRows, minRowCol);
-        setRows(validRows);
-        let validCols = sanitizeData(targetCols, minRowCol);
-        setCols(validCols);
+    let validRows = sanitizeData(targetRows, minRowCol);
+    setRows(validRows);
+    let validCols = sanitizeData(targetCols, minRowCol);
+    setCols(validCols);
 
-        const minMines = Math.floor(Math.sqrt(validRows*validCols -1));
-        let validMinesCount = sanitizeData(targetMines, minMines);
+    const minMines = Math.floor(Math.sqrt(validRows * validCols - 1));
+    let validMinesCount = sanitizeData(targetMines, minMines);
 
-        if(validMinesCount >= (validRows * validCols)){
-            validMinesCount = validRows * validCols - 1;
-        }
-        setMinesCount(validMinesCount);
-        console.log(`Starting new game with ${validRows}x${validCols} grid and ${validMinesCount} mines`);
+    if (validMinesCount >= (validRows * validCols - targetNukes)) {
+      validMinesCount = validRows * validCols - targetNukes - 1;
+    }
+    setMinesCount(validMinesCount);
 
-        let tempBoard = []
-        for(let i = 0; i < validRows; i++){
-            let row = [];
-            for(let j = 0; j < validCols; j++){
-                row.push(createCell(i, j));
-            }
-            tempBoard.push(row);
-        }
+    let tempBoard = [];
+    for (let i = 0; i < validRows; i++) {
+      let row = [];
+      for (let j = 0; j < validCols; j++) {
+        row.push(createCell(i, j));
+      }
+      tempBoard.push(row);
+    }
 
-        randomizeIcons();
-        randomizeBoard(tempBoard, validRows, validCols, validMinesCount);
+    randomizeIcons();
+    randomizeBoard(tempBoard, validRows, validCols, validMinesCount, targetNukes);
 
-        setBoard(tempBoard);
+    setBoard(tempBoard);
   };
 
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
-  const handleMine = () => {
-    if(shieldCount > 0){
-      shieldCount -= 1;
-      board[rowIndex][colIndex].isShield = true;
-      board[rowIndex][colIndex].isMine = false;
-      setPoints(points + 1);
-      return;
-    }
-    setGameStatus("Blown Up");
-    revealBoard();
-
-    if (activeTab === 'multiplayer' && isJoined) {
-      // Emit the current accumulated points on mine hit
-      socket.emit('endGame', {
-        roomID: RoomID,
-        playerID: playerID,
-        score: points, 
-        status: "Blown Up"
-      });
-    }
-  };
-
-  const handleNuke = () => {
-    setGameStatus("Obliterated");
-    revealBoard();
-
-    let newPoints = points/2;
-    setPoints(newPoints);
-
-    if (activeTab === 'multiplayer' && isJoined) {
-      // Emit the current accumulated points on mine hit
-      socket.emit('endGame', {
-        roomID: RoomID,
-        playerID: playerID,
-        score: newPoints, 
-        status: "Obliterated"
-      });
-    }
-  };
-
-  const handleSafeCell = (multiplier) => {
-    let turnsLeft = rows * cols - minesCount - nukeCount - clicks;
-    let earnedPoints = (100 * minesCount * multiplier) / turnsLeft;
-    
-    // 1. Calculate the actual new score value synchronously
-    const updatedPoints = points + earnedPoints;
-    
-    // 2. Update local state
-    setPoints(updatedPoints);
-
-    if (turnsLeft <= 1) {
-      setGameStatus("Victory");
+    const handleMine = () => {
+      if (shieldCount > 0) {
+        shieldCount -= 1;
+        board[rowIndex][colIndex].isShield = true;
+        board[rowIndex][colIndex].isMine = false;
+        setPoints(points + 1);
+        return;
+      }
+      setGameStatus("Blown Up");
       revealBoard();
 
-      // 3. Emit victory with the exact updatedPoints variable
       if (activeTab === 'multiplayer' && isJoined) {
         socket.emit('endGame', {
           roomID: RoomID,
           playerID: playerID,
-          score: updatedPoints,
-          status: "Victory"
+          score: points, 
+          status: "Blown Up"
         });
       }
-    }
-  };
+    };
 
-  const handlePickaxe = (chance) => {
-    let len = rows*cols;
-    let listOfVals = Array.from({length: len}, (_, index) => index);
-    if(Math.random() <= chance){
-      for(let i = 0; i < rows*cols; i++){
-          let index = Math.floor(Math.random() * (len));
-          let number = listOfVals[index]
+    const handleNuke = () => {
+      setGameStatus("Obliterated");
+      revealBoard();
+
+      let newPoints = points / 2;
+      setPoints(newPoints);
+
+      if (activeTab === 'multiplayer' && isJoined) {
+        socket.emit('endGame', {
+          roomID: RoomID,
+          playerID: playerID,
+          score: newPoints, 
+          status: "Obliterated"
+        });
+      }
+    };
+
+    const handleSafeCell = (multiplier) => {
+      let turnsLeft = rows * cols - minesCount - nukeCount - clicks;
+      let earnedPoints = (100 * minesCount * multiplier) / Math.max(1, turnsLeft);
+      
+      const updatedPoints = points + earnedPoints;
+      setPoints(updatedPoints);
+
+      if (turnsLeft <= 1) {
+        setGameStatus("Victory");
+        revealBoard();
+
+        if (activeTab === 'multiplayer' && isJoined) {
+          socket.emit('endGame', {
+            roomID: RoomID,
+            playerID: playerID,
+            score: updatedPoints,
+            status: "Victory"
+          });
+        }
+      }
+    };
+
+    const handlePickaxe = (chance) => {
+      let len = rows * cols;
+      let listOfVals = Array.from({ length: len }, (_, index) => index);
+      if (Math.random() <= chance) {
+        for (let i = 0; i < rows * cols; i++) {
+          let index = Math.floor(Math.random() * len);
+          let number = listOfVals[index];
 
           let row = Math.floor(number / cols);
           let col = Math.floor(number % cols);
 
-          if(board[row][col].isMine || board[row][col].isNuke || board[row][col].visible){
+          if (board[row][col].isMine || board[row][col].isNuke || board[row][col].visible) {
             listOfVals.splice(index, 1);
             len--;
           } else {
             handleCellClick(row, col, false);
             return;
           }  
-      }
-    }
-  }
-
-  if (!board[rowIndex][colIndex].visible) {
-    board[rowIndex][colIndex].visible = true;
-    if (board[rowIndex][colIndex].isMine) {
-      handleMine();
-    } else {
-      if(board[rowIndex][colIndex].isNuke){
-        handleNuke();
-      } else {
-        if(board[rowIndex][colIndex].isGift){
-          handleSafeCell(giftMultiplier)
-        } else{
-          handleSafeCell(1);
         }
       }
+    };
+
+    if (!board[rowIndex][colIndex].visible) {
+      board[rowIndex][colIndex].visible = true;
+      if (board[rowIndex][colIndex].isMine) {
+        handleMine();
+      } else {
+        if (board[rowIndex][colIndex].isNuke) {
+          handleNuke();
+        } else {
+          if (board[rowIndex][colIndex].isGift) {
+            handleSafeCell(giftMultiplier);
+          } else {
+            handleSafeCell(1);
+          }
+        }
+      }
+      if (pickaxeTriggerChance > 0 && isUserClick) {
+        handlePickaxe(pickaxeTriggerChance);
+      }
+      if (!board[rowIndex][colIndex].isShield) {
+        setClicks(clicks + 1);
+      }
     }
-    if(pickaxeTriggerChance > 0 && isUserClick){
-      handlePickaxe(pickaxeTriggerChance);
-    }
-    if(!board[rowIndex][colIndex].isShield)
-      setClicks(clicks + 1);
-  }
-};
+  };
 
   const handleJoinMultiplayer = (e) => {
     e.preventDefault();
@@ -486,7 +448,6 @@ useEffect(() => {
 
   return (
     <div className='min-h-screen bg-rose-50'>
-      {/* NAV BAR */}
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
         <h1 className="text-rose-500 font-serif text-xl font-bold flex items-center gap-2">
           <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
@@ -495,14 +456,14 @@ useEffect(() => {
           <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">💣 Mines 💣</MenuButton>
           <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
             <MenuItem>
-                {({ active }) => (
-                  <Link 
-                    to="/" 
-                    className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
-                  >
-                    Relationship Timeline
-                  </Link>
-                )}
+              {({ active }) => (
+                <Link 
+                  to="/" 
+                  className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                >
+                  Relationship Timeline
+                </Link>
+              )}
             </MenuItem>
             <MenuItem>
               {({ active }) => (
@@ -516,7 +477,6 @@ useEffect(() => {
       </nav>
 
       <div className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700 mt-6">
-        {/* MODE TABS */}
         <div className="flex gap-2 border-b border-rose-100 mb-6">
           <button
             onClick={() => { setActiveTab('singleplayer'); handleLeaveMultiplayer(); }}
@@ -540,7 +500,6 @@ useEffect(() => {
           </button>
         </div>
 
-        {/* MULTIPLAYER PROMPT FORM */}
         {activeTab === 'multiplayer' && !isJoined ? (
           <form onSubmit={handleJoinMultiplayer} className="space-y-4">
             <div className="text-center mb-4">
@@ -580,9 +539,7 @@ useEffect(() => {
             </button>
           </form>
         ) : (
-          /* GAME SCREEN (Identical for Singleplayer & Multiplayer) */
           <>
-            {/* HEADER & CONTROLS */}
             <div className="text-center mb-6">
               <h2 className="text-2xl font-serif text-slate-800 flex items-center justify-center gap-2">
                 <Bomb className="text-rose-500" size={24} /> Mines!
@@ -595,7 +552,6 @@ useEffect(() => {
               )}
             </div>
 
-            {/* INPUT CONTROLS ROW */}
             {gameStatus === "Lobby" && <div className="grid grid-cols-2 gap-2 mb-6">
               <div>
                 <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Rows</label>
@@ -621,8 +577,8 @@ useEffect(() => {
                 <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mines</label>
                 <input 
                   type="number" 
-                  min={Math.floor(Math.sqrt(rows*cols -1))}
-                  max={rows*cols - 1}
+                  min={Math.floor(Math.sqrt(rows * cols - 1))}
+                  max={rows * cols - 1}
                   value={minesCount} 
                   onChange={(e) => setMinesCount(e.target.value)}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
@@ -651,7 +607,6 @@ useEffect(() => {
                     const foundOption = currentList.find((p) => p.type === newType);
 
                     if (foundOption) {
-                      // Set state with the newly chosen powerup object
                       setSelectedPowerUp(foundOption);
                     }
                   }}
@@ -670,35 +625,33 @@ useEffect(() => {
               </div>
             </div>}
 
-            {/* LOBBY / LEAVE BUTTON */}
             {gameStatus !== "Lobby" && <button 
               onClick={() => {
                 setGameStatus("Lobby");
                 socket.emit('statusUpdate', {roomID: RoomID, playerID: playerID, status: "Lobby"});
-                if (activeTab === 'multiplayer');
               }}
               className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
             >
               <CircleArrowLeft size={18} /> Return To Lobby
             </button>}
 
-            {/* RESET / START BUTTON */}
-            {
-              <button 
-                onClick={() => {
-                  if (activeTab === 'multiplayer' && gameStatus === "Lobby") {
-                    socket.emit("startGame", { roomID: RoomID });
-                  } else {
-                    handleStartNewGame();
-                  }
-                }}
-                className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
-              >
-              {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span> : <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>}
-              </button>
-            }
+            <button 
+              onClick={() => {
+                if (activeTab === 'multiplayer' && gameStatus === "Lobby") {
+                  socket.emit("startGame", { roomID: RoomID });
+                } else {
+                  handleStartNewGame();
+                }
+              }}
+              className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
+            >
+              {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? (
+                <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span>
+              ) : (
+                <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>
+              )}
+            </button>
 
-            {/* THE GAME GRID DISPLAY */}
             <div className="flex justify-center mb-6">
               <div 
                 className="grid gap-2 bg-rose-100 p-3 rounded-2xl"
@@ -712,12 +665,11 @@ useEffect(() => {
                       className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-all shadow-sm ${
                         cell.visible 
                           ? cell.isMine 
-                            ? 'bg-black-500' 
+                            ? 'bg-rose-500 text-white' 
                             : 'bg-white text-slate-600'
                           : 'bg-rose-300 hover:bg-rose-400 text-transparent'
                       }`}
                     >
-                      {/* Visual content of the cell */}
                       {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
                                       (cell.isNuke ? <NukeIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
                                       (cell.isGift ? <GiftIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
@@ -729,7 +681,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* SCORE / STATUS DISPLAY */}
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs space-y-3">
               {activeTab === 'multiplayer' ? (
                 <div>
@@ -738,7 +689,7 @@ useEffect(() => {
                   </h4>
                   <div className="space-y-2">
                     {Object.values(playersList)
-                      .sort((a, b) => (b.score || 0) - (a.score || 0)) // Sort highest score first
+                      .sort((a, b) => (b.score || 0) - (a.score || 0))
                       .map((player, idx) => (
                         <div key={idx} className="flex items-center justify-between bg-white p-2.5 rounded-lg shadow-sm border border-slate-100">
                           <div>
@@ -755,7 +706,6 @@ useEffect(() => {
                   </div>
                 </div>
               ) : (
-                /* SINGLEPLAYER DISPLAY */
                 <div className="flex items-center justify-between text-slate-600 font-medium">
                   <div>
                     Status: <span className="font-bold text-rose-500 uppercase">{gameStatus}</span>
@@ -771,10 +721,8 @@ useEffect(() => {
                 </div>
               )}
             </div>
-            
           </>
         )}
-
       </div>
     </div>
   );
