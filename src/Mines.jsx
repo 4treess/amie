@@ -175,7 +175,7 @@ const Mines = () => {
   const handleStartNewGame = (settings = null) => {
   const targetRows = settings?.rows ?? rows;
   const targetCols = settings?.cols ?? cols;
-  const targetMines = settings?.mines ?? minesCount;
+  const targetMines = settings?.mines ?? minesCount - (selectedPowerUp.type === "Extra Mines" ? selectedPowerUp.value : 0);
   const targetNukes = settings?.nukes ?? nukeCount;
   const targetRounds = settings?.rounds ?? roundsCount;
 
