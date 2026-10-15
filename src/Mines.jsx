@@ -147,7 +147,8 @@ useEffect(() => {
       mines: minesCount,
       rounds: roundsCount,
       selectedPowerUp: selectedPowerUp,
-      previousPowerUp: previousPowerUp
+      previousPowerUp: previousPowerUp,
+      playerID: playerID
     });
   }
 }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
