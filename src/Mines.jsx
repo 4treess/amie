@@ -83,11 +83,14 @@ const Mines = () => {
       setRoundsCount(roomData.rounds);
 
       const myData = roomData.players?.[playerID];
-      if (myData && roomData.state === "Lobby") {
+      if (myData) {
         if (myData.rows) setRows(myData.rows);
         if (myData.cols) setCols(myData.cols);
         if (myData.mines) setMinesCount(myData.mines);
-        if (myData.nukes !== undefined) setNukeCount(myData.nukes);
+        // 👈 Only update nuke count if explicitly set and game is active
+        if (myData.nukes !== undefined && roomData.state === "In Game") {
+          setNukeCount(myData.nukes);
+        }
       }
     });
 
