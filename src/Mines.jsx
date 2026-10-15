@@ -23,8 +23,9 @@ const Mines = () => {
 
   // 1. GAME CONTROLS STATE (Configuration inputs)
   const minRowCol = 2;
-  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 3}, {type: "None", value: 0}];
+  const powerUps = [{type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 1}, {type: "None", value: 0}];
   const multiplayerPowerUps = [{type: "Extra Mines", value: 2}, {type: "Shield", value: 1}, {type: "Pickaxe", value: 1}, {type: "Mine Locator", value: 1}, {type: "Gift", value: 10}, {type: "Nuke", value: 1}, {type: "None", value: 0}];
+  const giftMultiplier = 10;
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
@@ -349,12 +350,13 @@ const Mines = () => {
         setBoard(tempBoard);
   };
 
-  const handleCellClick = (rowIndex, colIndex) => {
+  const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
   const handleMine = () => {
     if(shieldCount > 0){
       shieldCount -= 1;
       board[rowIndex][colIndex].isShield = true;
       board[rowIndex][colIndex].isMine = false;
+      setPoints(points + 1);
       return;
     }
     setGameStatus("Blown Up");
@@ -430,11 +432,7 @@ const Mines = () => {
             listOfVals.splice(index, 1);
             len--;
           } else {
-            if(board[rowIndex][colIndex].isGift){
-              handleSafeCell(10)
-            } else{
-              handleSafeCell(1);
-            }
+            handleCellClick(row, col, false);
             return;
           }  
       }
@@ -450,13 +448,13 @@ const Mines = () => {
         handleNuke();
       } else {
         if(board[rowIndex][colIndex].isGift){
-          handleSafeCell(10)
+          handleSafeCell(giftMultiplier)
         } else{
           handleSafeCell(1);
         }
       }
     }
-    if(pickaxeTriggerChance > 0){
+    if(pickaxeTriggerChance > 0 && isUserClick){
       handlePickaxe(pickaxeTriggerChance);
     }
     if(!board[rowIndex][colIndex].isShield)
