@@ -152,6 +152,19 @@ useEffect(() => {
   }
 }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
 
+// Sync power-up object values between Singleplayer and Multiplayer definitions when switching tabs
+useEffect(() => {
+  const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+  const match = currentList.find((p) => p.type === selectedPowerUp.type);
+
+  if (match) {
+    setSelectedPowerUp(match);
+  } else {
+    // If the powerup doesn't exist in the new mode (e.g. "Extra Mines" switching to singleplayer), set the default to None
+    setSelectedPowerUp({ type: "None", value: 0 });
+  }
+}, [activeTab]);
+
   const revealBoard = () => {
       for(const i of board){
           for(const j of i){
@@ -168,7 +181,7 @@ useEffect(() => {
       }
     }
 
-  // 3. HANDLERS (Placeholders for your game logic)
+  // 3. HANDLERS
   const handleStartNewGame = (settings = null) => {
     
     const targetRows = settings?.rows ?? rows;
@@ -276,20 +289,16 @@ useEffect(() => {
           }
         }
 
-        const resetPowerUpUsages = () => {
-          const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-          const match = currentList.find((p) => p.type === selectedPowerUp.type);
+      const resetPowerUpUsages = () => {
+        const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+        const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
 
-          if (match) {
-            // Reset global power-up counters
-            shieldCount = match.type === "Shield" ? match.value : 0;
-            pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
-            minesLocatable = match.type === "Mine Locator" ? match.value : 0;
-            giftCount = match.type === "Gift" ? match.value : 0;
-
-            setSelectedPowerUp({ ...match });
-          }
-        };
+        // Reset global power-up counters
+        shieldCount = match.type === "Shield" ? match.value : 0;
+        pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+        minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+        giftCount = match.type === "Gift" ? match.value : 0;
+      };
 
         if(gameStatus === "Lobby"){
           setPoints(0);
@@ -623,12 +632,16 @@ useEffect(() => {
                   Power Ups
                 </label>
                 <select
-                  value={typeof selectedPowerUp === "object" ? selectedPowerUp?.type : selectedPowerUp}
+                  value={selectedPowerUp.type}
                   onChange={(e) => {
-                    const selectedType = e.target.value;
+                    const newType = e.target.value;
                     const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-                    const foundObject = currentList.find((item) => item.type === selectedType);
-                    setSelectedPowerUp(foundObject || selectedType);
+                    const foundOption = currentList.find((p) => p.type === newType);
+
+                    if (foundOption) {
+                      // Set state with the newly chosen powerup object
+                      setSelectedPowerUp(foundOption);
+                    }
                   }}
                   className="w-full p-2 bg-rose-50 rounded-xl text-center font-bold text-slate-700 outline-none invalid:text-red-500"
                 >
