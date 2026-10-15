@@ -81,7 +81,8 @@ const Mines = () => {
       roomID: RoomID,
       playerID: playerID,
       nickname: nickname,
-      status: gameStatus
+      status: gameStatus,
+      selectedPowerUp: selectedPowerUp
     });
 
     socket.on('room_status_update', (roomData) => {
