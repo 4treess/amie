@@ -120,15 +120,6 @@ const Mines = () => {
   // Sync settings when inputs change in multiplayer
   useEffect(() => {
     if (isJoined && activeTab === 'multiplayer' && RoomID) {
-      socket.emit('changeSettings', {
-        roomID: RoomID,
-        rows: rows,
-        cols: cols,
-        mines: minesCount,
-        rounds: roundsCount,
-        selectedPowerUp: selectedPowerUp,
-        previousPowerUp: previousPowerUp
-      });
       if(previousPowerUp != selectedPowerUp){
         switch(selectedPowerUp.type){
           case "Shield":
@@ -159,8 +150,17 @@ const Mines = () => {
               giftCount -= previousPowerUp.value;
               break;
           }
-        previousPowerUp = selectedPowerUp;
       }
+      socket.emit('changeSettings', {
+        roomID: RoomID,
+        rows: rows,
+        cols: cols,
+        mines: minesCount,
+        rounds: roundsCount,
+        selectedPowerUp: selectedPowerUp,
+        previousPowerUp: previousPowerUp
+      });
+      previousPowerUp = selectedPowerUp;
     }
   }, [rows, cols, minesCount, roundsCount, selectedPowerUp, isJoined, activeTab, RoomID]);
 
