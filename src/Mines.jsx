@@ -169,162 +169,164 @@ const Mines = () => {
   };
 
   const handleStartNewGame = (settings = null) => {
-    const targetRows = settings?.rows ?? rows;
-    const targetCols = settings?.cols ?? cols;
-    const targetMines = settings?.mines ?? minesCount;
-    const targetNukes = settings?.nukes ?? nukeCount;
-    const targetRounds = settings?.rounds ?? roundsCount;
+  const targetRows = settings?.rows ?? rows;
+  const targetCols = settings?.cols ?? cols;
+  const targetMines = settings?.mines ?? minesCount;
+  const targetNukes = settings?.nukes ?? nukeCount;
+  const targetRounds = settings?.rounds ?? roundsCount;
 
-    // Sync local state for UI display
-    setRows(targetRows);
-    setCols(targetCols);
-    setMinesCount(targetMines);
-    setNukeCount(targetNukes);
-    setRoundsCount(targetRounds);
+  setNukeCount(targetNukes);
 
-    const sanitizeData = (data, min) => {
-      data = Number(data);
-      if (data > min) return Math.floor(data);
-      return min;
-    };
+  const sanitizeData = (data, min) => {
+    data = Number(data);
+    if (data > min) return Math.floor(data);
+    return min;
+  };
+  
+  const createCell = (r, c) => ({
+    row: r,
+    col: c,
+    isMine: false,
+    isGift: false,
+    isNuke: false,
+    isShield: false,
+    visible: false,
+  });
+
+  const resetPowerUpUsages = () => {
+    const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+    const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
+
+    // Reset module power-up counters synchronously before board placement
+    shieldCount = match.type === "Shield" ? match.value : 0;
+    pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+    minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+    giftCount = match.type === "Gift" ? match.value : 0;
+  };
+
+  const randomizeBoard = (boardArr, rCount, cCount, mCount, nCount) => {
+    let len = rCount * cCount;
+    let listOfVals = Array.from({ length: len }, (_, index) => index);
     
-    const createCell = (r, c) => ({
-      row: r,
-      col: c,
-      isMine: false,
-      isGift: false,
-      isNuke: false,
-      isShield: false,
-      visible: false,
-    });
+    // 1. Place Mines & Nukes (minesLocatable is now updated and takes effect in Game 1)
+    for (let i = 0; i < mCount + nCount; i++) {
+      if (len <= 0) break;
+      let index = Math.floor(Math.random() * len);
+      let number = listOfVals[index];
 
-    const randomizeBoard = (boardArr, rCount, cCount, mCount, nCount) => {
-      let len = rCount * cCount;
-      let listOfVals = Array.from({ length: len }, (_, index) => index);
-      
-      // 1. Place Mines and Nukes accurately
-      for (let i = 0; i < mCount + nCount; i++) {
-        if (len <= 0) break;
-        let index = Math.floor(Math.random() * len);
-        let number = listOfVals[index];
+      let r = Math.floor(number / cCount);
+      let c = Math.floor(number % cCount);
 
-        let r = Math.floor(number / cCount);
-        let c = Math.floor(number % cCount);
-
-        if (i < nCount) {
-          boardArr[r][c].isNuke = true;
-        } else {
-          if ((i - nCount) < minesLocatable) {
-            boardArr[r][c].visible = true;
-          }
-          boardArr[r][c].isMine = true;
+      if (i < nCount) {
+        boardArr[r][c].isNuke = true;
+      } else {
+        if ((i - nCount) < minesLocatable) {
+          boardArr[r][c].visible = true;
         }
-
-        listOfVals.splice(index, 1);
-        len--;
+        boardArr[r][c].isMine = true;
       }
 
-      // 2. Place Gifts
-      let availableSpace = len;
-      for (let i = 0; i < Math.min(giftCount, availableSpace); i++) {
-        let index = Math.floor(Math.random() * len);
-        let number = listOfVals[index];
+      listOfVals.splice(index, 1);
+      len--;
+    }
 
-        let r = Math.floor(number / cCount);
-        let c = Math.floor(number % cCount);
+    // 2. Place Gifts (giftCount is now updated and takes effect in Game 1)
+    let availableSpace = len;
+    for (let i = 0; i < Math.min(giftCount, availableSpace); i++) {
+      let index = Math.floor(Math.random() * len);
+      let number = listOfVals[index];
 
-        boardArr[r][c].isGift = true;
+      let r = Math.floor(number / cCount);
+      let c = Math.floor(number % cCount);
 
-        listOfVals.splice(index, 1);
-        len--;
+      boardArr[r][c].isGift = true;
+
+      listOfVals.splice(index, 1);
+      len--;
+    }
+  };
+
+  const randomizeIcons = () => {
+    let randomNum = Math.floor(Math.random() * 101);
+    if (randomNum < 50) {
+      if (randomNum < 25) {
+        setSafeIcon(() => Heart);
+        setBombIcon(() => HeartCrack);
+      } else {
+        setSafeIcon(() => Gem);
+        setBombIcon(() => Bomb);
       }
-    };
-
-    const randomizeIcons = () => {
-      let randomNum = Math.floor(Math.random() * 101);
-      if (randomNum < 50) {
-        if (randomNum < 25) {
-          setSafeIcon(() => Heart);
-          setBombIcon(() => HeartCrack);
+    } else {
+      if (randomNum < 76) {
+        if (randomNum > 50) {
+          setSafeIcon(() => Smile);
+          setBombIcon(() => Frown);
         } else {
-          setSafeIcon(() => Gem);
-          setBombIcon(() => Bomb);
+          setSafeIcon(() => FireExtinguisher);
+          setBombIcon(() => Flame);
         }
       } else {
-        if (randomNum < 76) {
-          if (randomNum > 50) {
-            setSafeIcon(() => Smile);
-            setBombIcon(() => Frown);
-          } else {
-            setSafeIcon(() => FireExtinguisher);
-            setBombIcon(() => Flame);
-          }
+        if (randomNum === 100) {
+          setSafeIcon(() => Egg);
+          setBombIcon(() => EggFried);
         } else {
-          if (randomNum === 100) {
-            setSafeIcon(() => Egg);
-            setBombIcon(() => EggFried);
-          } else {
-            setSafeIcon(() => Ham);
-            setBombIcon(() => Bone);
-          }
+          setSafeIcon(() => Ham);
+          setBombIcon(() => Bone);
         }
       }
-    };
+    }
+  };
 
-    const resetPowerUpUsages = () => {
-      const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-      const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
-
-      shieldCount = match.type === "Shield" ? match.value : 0;
-      pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
-      minesLocatable = match.type === "Mine Locator" ? match.value : 0;
-      giftCount = match.type === "Gift" ? match.value : 0;
-    };
-
-    if (gameStatus === "Lobby") {
-      setPoints(0);
-      socket.emit('resetPoints', { roomID: RoomID, playerID: playerID });
-      setCurrentRound(1);
+  if (gameStatus === "Lobby") {
+    setPoints(0);
+    socket.emit('resetPoints', { roomID: RoomID, playerID: playerID });
+    setCurrentRound(1);
+    setGameStatus("In Game");
+    socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
+  } else {
+    if (targetRounds > 0 && currentRound >= targetRounds) {
+      setGameStatus("Lobby");
+      socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "Lobby" });
+    } else {
+      setCurrentRound((prev) => prev + 1);
       setGameStatus("In Game");
       socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
-    } else {
-      if (targetRounds > 0 && currentRound >= targetRounds) {
-        setGameStatus("Lobby");
-        socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "Lobby" });
-      } else {
-        setCurrentRound((prev) => prev + 1);
-        setGameStatus("In Game");
-        socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
-      }
     }
+  }
 
-    setClicks(0);
-    setRoundsCount(Number(targetRounds));
-    resetPowerUpUsages();
+  setClicks(0);
+  setRoundsCount(Number(targetRounds));
 
-    let validRows = sanitizeData(targetRows, minRowCol);
-    let validCols = sanitizeData(targetCols, minRowCol);
-    let validMinesCount = Number(targetMines);
+  // 👈 CRITICAL FIX: Reset powerup variables FIRST before building board
+  resetPowerUpUsages();
 
-    // Guard limits
-    if (validMinesCount >= (validRows * validCols - targetNukes)) {
-      validMinesCount = validRows * validCols - targetNukes - 1;
+  let validRows = sanitizeData(targetRows, minRowCol);
+  setRows(validRows);
+  let validCols = sanitizeData(targetCols, minRowCol);
+  setCols(validCols);
+
+  const minMines = Math.floor(Math.sqrt(validRows * validCols - 1));
+  let validMinesCount = sanitizeData(targetMines, minMines);
+
+  if (validMinesCount >= (validRows * validCols - targetNukes)) {
+    validMinesCount = validRows * validCols - targetNukes - 1;
+  }
+  setMinesCount(validMinesCount);
+
+  let tempBoard = [];
+  for (let i = 0; i < validRows; i++) {
+    let row = [];
+    for (let j = 0; j < validCols; j++) {
+      row.push(createCell(i, j));
     }
+    tempBoard.push(row);
+  }
 
-    let tempBoard = [];
-    for (let i = 0; i < validRows; i++) {
-      let row = [];
-      for (let j = 0; j < validCols; j++) {
-        row.push(createCell(i, j));
-      }
-      tempBoard.push(row);
-    }
+  randomizeIcons();
+  randomizeBoard(tempBoard, validRows, validCols, validMinesCount, targetNukes);
 
-    randomizeIcons();
-    randomizeBoard(tempBoard, validRows, validCols, validMinesCount, targetNukes);
-
-    setBoard(tempBoard);
-  };
+  setBoard(tempBoard);
+};
 
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
     const handleMine = () => {
