@@ -170,11 +170,14 @@ const Mines = () => {
   const handleStartNewGame = (settings = null) => {
   const targetRows = settings?.rows ?? rows;
   const targetCols = settings?.cols ?? cols;
-  const targetMines = settings?.mines ?? minesCount - (selectedPowerUp.type === "Extra Mines" ? selectedPowerUp.value : 0);
-  const targetNukes = settings?.nukes ?? nukeCount;
+  const targetMines = settings?.mines - (selectedPowerUp.type === "Extra Mines" ? selectedPowerUp.value : 0) ?? minesCount;
+  const targetNukes = settings?.nukes - (selectedPowerUp.type === "Nuke" ? selectedPowerUp.value : 0) ?? nukeCount;
   const targetRounds = settings?.rounds ?? roundsCount;
 
-  setNukeCount(targetNukes);
+  if(settings != null){
+    setNukeCount(targetNukes);
+    setMinesCount(targetMines);
+  }
 
   const sanitizeData = (data, min) => {
     data = Number(data);
