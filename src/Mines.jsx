@@ -100,7 +100,7 @@ const Mines = () => {
         setCols(myData.cols);
         setMinesCount(myData.mines);
         setNukeCount(myData.nukes);
-        selectedPowerUp(selectedPowerUp);
+        setSelectedPowerUp(selectedPowerUp);
       }
       //resetPowerUpUsages();
       handleStartNewGame(myData);
