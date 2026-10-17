@@ -519,6 +519,10 @@ const Mines = () => {
         if (board[rowIndex][colIndex].isNuke) {
           handleNuke();
         } else {
+          if (pickaxeTriggerChance > 0 && isUserClick) {
+            handlePickaxe(pickaxeTriggerChance);
+            // handleSafeCell(1);
+          }
           if (board[rowIndex][colIndex].isGift) {
             playGift();
             handleSafeCell(giftMultiplier);
@@ -534,10 +538,6 @@ const Mines = () => {
       }
       if (!board[rowIndex][colIndex].isShield) {
         setClicks(clicks + 1);
-      }
-      if (pickaxeTriggerChance > 0 && isUserClick) {
-        handlePickaxe(pickaxeTriggerChance);
-        handleSafeCell(1);
       }
     }
   };
