@@ -31,7 +31,7 @@ const Mines = () => {
     { 
       type: "Shield", 
       value: 1, 
-      description: (val) => `Protects you from blowing up on your first ${val} mine hit(s).` 
+      description: (val) => `Protects you from blowing up on your first ${val === 1 ? "mine hit" : `${val} mines hit`}.` 
     },
     { 
       type: "Pickaxe", 
