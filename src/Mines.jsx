@@ -156,9 +156,9 @@ const Mines = () => {
     }
   };
 
-  const resetPowerUpUsages = () => {
+  const resetPowerUpUsages = (settings = null) => {
     const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-    const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
+    const match = currentList.find((p) => p.type === settings?.powerUp.type ?? selectedPowerUp.type) || (settings?.powerUp ?? selectedPowerUp);
 
     // Reset module power-up counters synchronously before board placement
     shieldCount = match.type === "Shield" ? match.value : 0;
@@ -285,7 +285,7 @@ const Mines = () => {
   setClicks(0);
   setRoundsCount(Number(targetRounds));
 
-  resetPowerUpUsages();
+  resetPowerUpUsages(settings);
 
   let validRows = sanitizeData(targetRows, minRowCol);
   setRows(validRows);
