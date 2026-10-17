@@ -9,11 +9,6 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
   transports: ['websocket']
 });
 
-let shieldCount = 1;
-let pickaxeTriggerChance = 0;
-let minesLocatable = 0;
-let giftCount = 0;
-
 const Mines = () => {
   const [activeTab, setActiveTab] = useState('singleplayer');
   const [isJoined, setIsJoined] = useState(false);
@@ -25,9 +20,10 @@ const Mines = () => {
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
-  const [NukeIcon, setNukeIcon] = useState(() => Radiation)
-  const [GiftIcon, setGiftIcon] = useState(() => Gift)
-  const [ShieldIcon, setShieldIcon] = useState(() => ShieldPlus)
+  const [minesLocatable, setMinesLocatable] = useState(0)
+  const [pickaxeTriggerChance, setPickaxeTriggerChance] = useState(0)
+  const [giftCount, setGiftCount] = useState(0)
+  const [shieldCount, setShieldCount] = useState(1)
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
@@ -159,10 +155,10 @@ const Mines = () => {
     const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
 
     // Reset module power-up counters synchronously before board placement
-    shieldCount = match.type === "Shield" ? match.value : 0;
-    pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
-    minesLocatable = match.type === "Mine Locator" ? match.value : 0;
-    giftCount = match.type === "Gift" ? match.value : 0;
+    setShieldCount(match.type === "Shield" ? match.value : 0);
+    setPickaxeTriggerChance(match.type === "Pickaxe" ? match.value : 0);
+    setMinesLocatable(match.type === "Mine Locator" ? match.value : 0);
+    setGiftCount(match.type === "Gift" ? match.value : 0);
   };
 
   const handleStartNewGame = (settings = null) => {
@@ -316,7 +312,7 @@ const Mines = () => {
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
     const handleMine = () => {
       if (shieldCount > 0) {
-        shieldCount -= 1;
+        setShieldCount(shieldCount - 1);
         board[rowIndex][colIndex].isShield = true;
         board[rowIndex][colIndex].isMine = false;
         setPoints(points + 1);
