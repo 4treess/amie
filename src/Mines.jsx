@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import useSound from 'use-sound';
+import mineSfx from 'assets/384113__microsoftsam__bang01.wav'
+import safeSfx from 'assets/523425__andersmmg__ding-2.wav'
+import nukeSfx from 'assets/587190__derplayer__explosion_04.wav'
+import giftSfx from 'amie-babie/src/assets/620668__s11it0__happy-coin.wav'
+import shieldSfx from 'amie-babie/src/assets/418194__deleted_user_3656686__hard-glass-impact.wav'
 import { 
   Bomb, RefreshCw, Gift, Heart, HeartCrack, Gem, Egg, EggFried, 
   Smile, Frown, Bone, ShieldPlus, FireExtinguisher, Flame, Ham, 
@@ -409,14 +415,22 @@ const Mines = () => {
   };
 
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
+    const [playMine] = useSound(mineSfx);
+    const [playGift] = useSound(giftSfx);
+    const [playSafe] = useSound(safeSfx);
+    const [playNuke] = useSound(nukeSfx);
+    const [playShield] = useSound(shieldSfx);
+
     const handleMine = () => {
       if (shieldCount > 0) {
+        playShield();
         shieldCount -= 1;
         board[rowIndex][colIndex].isShield = true;
         board[rowIndex][colIndex].isMine = false;
         setPoints(points + 1);
         return;
       }
+      playMine();
       setGameStatus("Blown Up");
       revealBoard();
 
@@ -431,6 +445,7 @@ const Mines = () => {
     };
 
     const handleNuke = () => {
+      playNuke();
       setGameStatus("Obliterated");
       revealBoard();
 
@@ -500,9 +515,11 @@ const Mines = () => {
           handleNuke();
         } else {
           if (board[rowIndex][colIndex].isGift) {
+            playGift();
             handleSafeCell(giftMultiplier);
           } else {
             if(isUserClick){
+              playSafe();
               handleSafeCell(1);
             } else {
               handleSafeCell(2.1);
