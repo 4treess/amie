@@ -371,7 +371,7 @@ const Mines = () => {
     };
 
     const handleSafeCell = (multiplier) => {
-      let turnsLeft = rows * cols - minesCount - nukeCount - clicks;
+      let turnsLeft = rows * cols - minesCount - nukeCount - clicks - (pickaxeTriggerChance > 0 ? 1 : 0);
       let earnedPoints = (100 * minesCount * multiplier) / Math.max(1, turnsLeft);
       
       const updatedPoints = points + earnedPoints;
