@@ -621,11 +621,11 @@ const Mines = () => {
                   />
                 </div>
                 <div className="col-span-2">
-                  <div className='text-justify after:w-full'>
-                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1">
+                  <div className='clearfix'>
+                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 float-left">
                       Equipped Power-Up
                     </label>
-                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 text-right">
+                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 float-right">
                       Show Description
                     </label>
                   </div>
