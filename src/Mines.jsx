@@ -505,7 +505,7 @@ const Mines = () => {
             len--;
           } else {
             handleCellClick(row, col, false);
-            return 1.75;
+            return 0.75;
           }  
         }
       } return 0;
