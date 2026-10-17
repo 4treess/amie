@@ -9,7 +9,6 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
   transports: ['websocket']
 });
 
-let previousPowerUp = "None";
 let shieldCount = 1;
 let pickaxeTriggerChance = 0;
 let minesLocatable = 0;
@@ -87,7 +86,6 @@ const Mines = () => {
         if (myData.rows) setRows(myData.rows);
         if (myData.cols) setCols(myData.cols);
         if (myData.mines) setMinesCount(myData.mines);
-        // 👈 Only update nuke count if explicitly set and game is active
         if (myData.nukes !== undefined && roomData.state === "In Game") {
           setNukeCount(myData.nukes);
         }
@@ -121,24 +119,7 @@ const Mines = () => {
   // Sync settings when inputs change in multiplayer
   useEffect(() => {
     if (isJoined && activeTab === 'multiplayer' && RoomID) {
-      if (previousPowerUp !== selectedPowerUp.type) {
-        switch (previousPowerUp) {
-          case "Shield": shieldCount -= 1; break;
-          case "Pickaxe": pickaxeTriggerChance -= 1; break;
-          case "Mine Locator": minesLocatable -= 1; break;
-          case "Gift": giftCount -= 10; break;
-          default: break;
-        }
-        switch (selectedPowerUp.type) {
-          case "Shield": shieldCount += selectedPowerUp.value; break;
-          case "Pickaxe": pickaxeTriggerChance += selectedPowerUp.value; break;
-          case "Mine Locator": minesLocatable += selectedPowerUp.value; break;
-          case "Gift": giftCount += selectedPowerUp.value; break;
-          default: break;
-        }
-
-        previousPowerUp = selectedPowerUp.type;
-      }
+      resetPowerUpUsages();
 
       socket.emit('changeSettings', {
         roomID: RoomID,
@@ -147,7 +128,6 @@ const Mines = () => {
         mines: minesCount,
         rounds: roundsCount,
         selectedPowerUp: selectedPowerUp,
-        previousPowerUp: previousPowerUp,
         playerID: playerID
       });
     }
