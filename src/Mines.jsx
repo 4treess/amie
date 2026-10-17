@@ -195,14 +195,13 @@ const Mines = () => {
     // 1. Explicit Fallback Parameters (Prevents NaN)
     const targetRows = settings?.rows !== undefined ? settings.rows : rows;
     const targetCols = settings?.cols !== undefined ? settings.cols : cols;
-    const targetMines = settings?.mines !== undefined ? settings.mines : minesCount;
-    const targetNukes = settings?.nukes !== undefined ? settings.nukes : nukeCount;
+    const targetMines = settings?.mines !== undefined ? settings.mines - (settings?.powerUp.type === "Extra Mines" ? settings.powerUp.value : 0) : minesCount;
+    const targetNukes = settings?.nukes !== undefined ? settings.nukes - (settings?.powerUp.type === "Nuke" ? settings.powerUp.value : 0) : nukeCount;
     const targetRounds = settings?.rounds !== undefined ? settings.rounds : roundsCount;
 
-    if(settings != null){
-      setNukeCount(targetNukes - (settings?.powerUp.type === "Nuke" ? settings.powerUp.value : 0));
-      setMinesCount(targetMines - (settings?.powerUp.type === "Extra Mines" ? settings.powerUp.value : 0));
-    }
+    setNukeCount(targetNukes);
+    setMinesCount(targetMines);
+    
     const sanitizeData = (data, min) => {
       data = Number(data);
       return isNaN(data) || data < min ? min : Math.floor(data);
