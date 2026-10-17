@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import useSound from 'use-sound';
-import mineSfx from './assets/384113__microsoftsam__bang01.wav'
-import safeSfx from './assets/523425__andersmmg__ding-2.wav'
-import nukeSfx from './assets/587190__derplayer__explosion_04.wav'
-import giftSfx from './assets/620668__s11it0__happy-coin.wav'
-import shieldSfx from './assets/418194__deleted_user_3656686__hard-glass-impact.wav'
+import mineSfx from './assets/384113__microsoftsam__bang01.wav';
+import safeSfx from './assets/523425__andersmmg__ding-2.wav';
+import nukeSfx from './assets/587190__derplayer__explosion_04.wav';
+import giftSfx from './assets/620668__s11it0__happy-coin.wav';
+import shieldSfx from './assets/418194__deleted_user_3656686__hard-glass-impact.wav';
+import victorySfx from './assets/619832__cogfirestudios__puzzle-game-victory-melody.wav';
 import { 
   Bomb, RefreshCw, Gift, Heart, HeartCrack, Gem, Egg, EggFried, 
   Smile, Frown, Bone, ShieldPlus, FireExtinguisher, Flame, Ham, 
@@ -34,6 +35,7 @@ const Mines = () => {
   const [playSafe] = useSound(safeSfx);
   const [playNuke] = useSound(nukeSfx);
   const [playShield] = useSound(shieldSfx);
+  const [playVictory] = useSound(victorySfx);
   
   // Navigation & Mode State
   const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
@@ -472,6 +474,7 @@ const Mines = () => {
       setPoints(updatedPoints);
 
       if (turnsLeft <= 1) {
+        playVictory();
         setGameStatus("Victory");
         revealBoard();
 
