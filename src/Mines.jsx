@@ -453,7 +453,7 @@ const Mines = () => {
       setGameStatus("Obliterated");
       revealBoard();
 
-      const newPoints = (points * nukePointPenality * -1);
+      const newPoints = (0);
       setPoints(newPoints);
 
       if (activeTab === 'multiplayer' && isJoined) {
