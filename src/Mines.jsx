@@ -28,20 +28,69 @@ const Mines = () => {
   // Power-Up Lists
   const minRowCol = 2;
   const powerUps = [
-    { type: "Shield", value: 1 }, 
-    { type: "Pickaxe", value: 1 }, 
-    { type: "Mine Locator", value: 1 }, 
-    { type: "Gift", value: 1 }, 
-    { type: "None", value: 0 }
+    { 
+      type: "Shield", 
+      value: 1, 
+      description: (val) => `Protects you from blowing up on your first ${val} mine hit(s).` 
+    },
+    { 
+      type: "Pickaxe", 
+      value: 1, 
+      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click.` 
+    },
+    { 
+      type: "Mine Locator", 
+      value: 1, 
+      description: (val) => `Reveals the location of ${val} mine(s) on your board at game start.` 
+    },
+    { 
+      type: "Gift", 
+      value: 1, 
+      description: (val) => `Places ${val} gift tile(s) on the board that award extra points when clicked.` 
+    },
+    { 
+      type: "None", 
+      value: 0, 
+      description: () => "No special power-up equipped." 
+    }
   ];
+
   const multiplayerPowerUps = [
-    { type: "Extra Mines", value: 2 }, 
-    { type: "Shield", value: 1 }, 
-    { type: "Pickaxe", value: 1 }, 
-    { type: "Mine Locator", value: 1 }, 
-    { type: "Gift", value: 10 }, 
-    { type: "Nuke", value: 1 }, 
-    { type: "None", value: 0 }
+    { 
+      type: "Extra Mines", 
+      value: 2, 
+      description: (val) => `Adds ${val} extra mine(s) to all opponents' boards.` 
+    },
+    { 
+      type: "Shield", 
+      value: 1, 
+      description: (val) => `Protects you from blowing up on your first ${val} mine hit(s).` 
+    },
+    { 
+      type: "Pickaxe", 
+      value: 1, 
+      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click.` 
+    },
+    { 
+      type: "Mine Locator", 
+      value: 1, 
+      description: (val) => `Reveals the location of ${val} mine(s) on your board at game start.` 
+    },
+    { 
+      type: "Gift", 
+      value: 10, 
+      description: (val) => `Places a gift tile on your board that awards ${val}x points when clicked.` 
+    },
+    { 
+      type: "Nuke", 
+      value: 1, 
+      description: (val) => `Adds ${val} nuke tile(s) to all opponents' boards that reduce points if detonated.` 
+    },
+    { 
+      type: "None", 
+      value: 0, 
+      description: () => "No special power-up equipped." 
+    }
   ];
   const giftMultiplier = 10;
 
@@ -61,6 +110,7 @@ const Mines = () => {
   const [roundsCount, setRoundsCount] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
   const [selectedPowerUp, setSelectedPowerUp] = useState({ type: "None", value: 0 });
+  const [showDescription, setShowDescription] = useState(false);
 
   // Multiplayer States
   const [RoomID, setRoomID] = useState("");
@@ -621,14 +671,19 @@ const Mines = () => {
                   />
                 </div>
                 <div className="col-span-2">
-                  <div className='clearfix'>
-                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 float-left">
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-[10px] font-bold uppercase text-slate-400">
                       Equipped Power-Up
                     </label>
-                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 float-right">
-                      Show Description
-                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowDescription((prev) => !prev)}
+                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none"
+                    >
+                      {showDescription ? "Hide Description" : "Show Description"}
+                    </button>
                   </div>
+                  
                   <select
                     value={selectedPowerUp.type}
                     onChange={(e) => {
@@ -652,6 +707,18 @@ const Mines = () => {
                       </option>
                     ))}
                   </select>
+
+                  {/* CONDITIONAL DESCRIPTION DISPLAY */}
+                  {showDescription && (
+                    <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs text-slate-600 animate-fadeIn">
+                      <span className="font-bold text-rose-500 block mb-0.5">
+                        {selectedPowerUp.type}
+                      </span>
+                      {typeof selectedPowerUp.description === 'function'
+                        ? selectedPowerUp.description(selectedPowerUp.value)
+                        : selectedPowerUp.description || "No description available."}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
