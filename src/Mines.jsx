@@ -173,6 +173,17 @@ const Mines = () => {
     }
   };
 
+  const resetPowerUpUsages = () => {
+    const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
+    const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
+
+    // Reset module power-up counters synchronously before board placement
+    shieldCount = match.type === "Shield" ? match.value : 0;
+    pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+    minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+    giftCount = match.type === "Gift" ? match.value : 0;
+  };
+
   const handleStartNewGame = (settings = null) => {
   const targetRows = settings?.rows ?? rows;
   const targetCols = settings?.cols ?? cols;
@@ -197,17 +208,6 @@ const Mines = () => {
     isShield: false,
     visible: false,
   });
-
-  const resetPowerUpUsages = () => {
-    const currentList = activeTab === "multiplayer" ? multiplayerPowerUps : powerUps;
-    const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
-
-    // Reset module power-up counters synchronously before board placement
-    shieldCount = match.type === "Shield" ? match.value : 0;
-    pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
-    minesLocatable = match.type === "Mine Locator" ? match.value : 0;
-    giftCount = match.type === "Gift" ? match.value : 0;
-  };
 
   const randomizeBoard = (boardArr, rCount, cCount, mCount, nCount) => {
     let len = rCount * cCount;
