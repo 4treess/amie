@@ -821,7 +821,7 @@ const Mines = () => {
                         ) : cell.isGift ? (
                           <GiftIcon size={20} className={gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-green-500"} />
                         ) : cell.isShield ? (
-                          <ShieldIcon size={20} className={gameStatus === "Victory" ? "text-white-600" : "text-red-850"} />
+                          <ShieldIcon size={20} className={gameStatus === "Victory" ? "text-white-600" : "text-red-800"} />
                         ) : (
                           <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-slate-600"} />
                         )
