@@ -505,12 +505,13 @@ const Mines = () => {
             len--;
           } else {
             handleCellClick(row, col, false);
-            return;
+            return 1;
           }  
         }
-      }
+      } return 0;
     };
 
+    let pickaxeMultiplier = 1;
     if (!board[rowIndex][colIndex].visible) {
       board[rowIndex][colIndex].visible = true;
       if (board[rowIndex][colIndex].isMine) {
@@ -520,16 +521,15 @@ const Mines = () => {
           handleNuke();
         } else {
           if (pickaxeTriggerChance > 0 && isUserClick) {
-            handlePickaxe(pickaxeTriggerChance);
-            handleSafeCell(2.5);
+            pickaxeMultiplier += handlePickaxe(pickaxeTriggerChance);
           }
           if (board[rowIndex][colIndex].isGift) {
             playGift();
-            handleSafeCell(giftMultiplier);
+            handleSafeCell(pickaxeMultiplier * giftMultiplier);
           } else {
             if(isUserClick){
               playSafe();
-              handleSafeCell(1);
+              handleSafeCell(pickaxeMultiplier);
             }
           }
         }
