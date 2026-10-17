@@ -654,9 +654,9 @@ const Mines = () => {
                       }`}
                     >
                       {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
-                                      (cell.isNuke ? <NukeIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
-                                      (cell.isGift ? <GiftIcon size={20} className={gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-green-500"}/> : 
-                                      (cell.isShield ? <ShieldIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isNuke ? <Radiation size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isGift ? <Gift size={20} className={gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-green-500"}/> : 
+                                      (cell.isShield ? <ShieldPlus size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
                                       <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-black-500"}/>)))) : '?'}
                     </button>
                   ))
