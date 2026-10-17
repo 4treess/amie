@@ -505,13 +505,13 @@ const Mines = () => {
             len--;
           } else {
             handleCellClick(row, col, false);
-            return 1;
+            return 1.75;
           }  
         }
       } return 0;
     };
 
-    let pickaxeMultiplier = 1;
+    let pickaxeMultiplier = 0;
     if (!board[rowIndex][colIndex].visible) {
       board[rowIndex][colIndex].visible = true;
       if (board[rowIndex][colIndex].isMine) {
@@ -525,11 +525,11 @@ const Mines = () => {
           }
           if (board[rowIndex][colIndex].isGift) {
             playGift();
-            handleSafeCell(pickaxeMultiplier * giftMultiplier);
+            handleSafeCell(pickaxeMultiplier + giftMultiplier);
           } else {
             if(isUserClick){
               playSafe();
-              handleSafeCell(pickaxeMultiplier);
+              handleSafeCell(pickaxeMultiplier + 1);
             }
           }
         }
