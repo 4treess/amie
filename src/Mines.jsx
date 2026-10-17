@@ -52,7 +52,7 @@ const Mines = () => {
     { 
       type: "Pickaxe", 
       value: 1, 
-      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click.` 
+      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click. extra tiles are worth ${pickaxeScore}x points of normal tiles` 
     },
     { 
       type: "Mine Locator", 
