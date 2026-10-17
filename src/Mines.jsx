@@ -447,6 +447,7 @@ const Mines = () => {
       }
       if (pickaxeTriggerChance > 0 && isUserClick) {
         handlePickaxe(pickaxeTriggerChance);
+        handleSafeCell(1);
       }
     }
   };
@@ -725,9 +726,11 @@ const Mines = () => {
                 <div>
                   <h4 className="font-bold text-slate-700 uppercase tracking-wider mb-2 border-b border-slate-200 pb-1 flex items-center justify-between">
                     <span>Leaderboard</span>
-                    <span className="text-[10px] text-slate-400 font-normal">
-                      Mines: {minesCount} | Nukes: {nukeCount}
-                    </span>
+                    {gameStatus !== "Lobby" && 
+                      (<span className="text-[10px] text-slate-400 font-normal">
+                        Mines: {minesCount} | Nukes: {nukeCount}
+                      </span>)
+                    }
                   </h4>
                   <div className="space-y-2">
                     {Object.values(playersList)
@@ -739,7 +742,7 @@ const Mines = () => {
                             <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-rose-100 text-rose-600">
                               {player.status || 'Lobby'}
                             </span>
-                            {player.powerUp?.type && player.powerUp?.type !== "None" && (
+                            {player.powerUp?.type && player.powerUp?.type !== "None" && gameStatus !== "Lobby" && player.status !== "Lobby" && (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 flex items-center gap-1">
                                 <Zap size={10} /> {player.powerUp.type}
                               </span>
