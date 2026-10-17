@@ -624,6 +624,9 @@ const Mines = () => {
                   <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
                     Equipped Power-Up
                   </label>
+                  <label className="text-[10px] font-bold uppercase text-slate-400 block mb-1 text-right">
+                    Show Description
+                  </label>
                   <select
                     value={selectedPowerUp.type}
                     onChange={(e) => {
