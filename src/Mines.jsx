@@ -101,7 +101,7 @@ const Mines = () => {
         setMinesCount(myData.mines);
         setNukeCount(myData.nukes);
       }
-      resetPowerUpUsages();
+      //resetPowerUpUsages();
       handleStartNewGame(myData);
     });
 
