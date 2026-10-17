@@ -30,8 +30,8 @@ const Mines = () => {
   const powerUps = [
     { 
       type: "Shield", 
-      value: 2, 
-      description: (val) => `Protects you from blowing up on your first ${val === 1 ? "mine hit" : `${val} mines hit`}.` 
+      value: 1, 
+      description: (val) => `Protects you from blowing up on your first ${val === 1 ? "mine hit" : `${val} mines hit`}. Shields cannot protect you from a nuke!` 
     },
     { 
       type: "Pickaxe", 
@@ -41,12 +41,12 @@ const Mines = () => {
     { 
       type: "Mine Locator", 
       value: 1, 
-      description: (val) => `Reveals the location of ${val} mine(s) on your board at game start.` 
+      description: (val) => `Reveals the location of ${val === 1 ? `${val} mine` : `${val} mines`} on your board at game start.` 
     },
     { 
       type: "Gift", 
       value: 1, 
-      description: (val) => `Places ${val} gift tile(s) on the board that award extra points when clicked.` 
+      description: (val) => `Places ${val === 1 ? `${val} tile` : `${val} tiles`} on the board that award ${giftMultiplier}x the points when clicked.` 
     },
     { 
       type: "None", 
@@ -59,12 +59,12 @@ const Mines = () => {
     { 
       type: "Extra Mines", 
       value: 2, 
-      description: (val) => `Adds ${val} extra mine(s) to all opponents' boards.` 
+      description: (val) => `Adds ${val === 1 ? `an extra mine` : `${val} extra mines`} to all opponents' boards.` 
     },
     { 
       type: "Shield", 
       value: 1, 
-      description: (val) => `Protects you from blowing up on your first ${val} mine hit(s).` 
+      description: (val) => `Protects you from blowing up on your first ${val === 1 ? "mine hit" : `${val} mines hit`}. Shields cannot protect you from a nuke!` 
     },
     { 
       type: "Pickaxe", 
@@ -73,18 +73,18 @@ const Mines = () => {
     },
     { 
       type: "Mine Locator", 
-      value: 1, 
-      description: (val) => `Reveals the location of ${val} mine(s) on your board at game start.` 
+      value: 2, 
+      description: (val) => `Reveals the location of ${val === 1 ? `${val} mine` : `${val} mines`} on your board at game start.` 
     },
     { 
       type: "Gift", 
-      value: 10, 
-      description: (val) => `Places a gift tile on your board that awards ${val}x points when clicked.` 
+      value: 2, 
+      description: (val) => `Places ${val === 1 ? `${val} tile` : `${val} tiles`} on the board that award ${giftMultiplier}x the points when clicked.` 
     },
     { 
       type: "Nuke", 
       value: 1, 
-      description: (val) => `Adds ${val} nuke tile(s) to all opponents' boards that reduce points if detonated.` 
+      description: (val) => `Adds ${val === 1 ? `a nuke tile` : `${val} nuke tiles`} to all opponents' boards that reduces their total points by 1/${nukePointPenality} if detonated. Shields cannot protect against a nuke.` 
     },
     { 
       type: "None", 
@@ -93,6 +93,7 @@ const Mines = () => {
     }
   ];
   const giftMultiplier = 10;
+  const nukePointPenality = 2;
 
   // Board Icons & Game State
   const [SafeIcon, setSafeIcon] = useState(() => Gem);
@@ -420,7 +421,7 @@ const Mines = () => {
       setGameStatus("Obliterated");
       revealBoard();
 
-      let newPoints = points / 2;
+      let newPoints = points / nukePointPenality;
       setPoints(newPoints);
 
       if (activeTab === 'multiplayer' && isJoined) {
