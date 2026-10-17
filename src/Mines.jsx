@@ -103,7 +103,7 @@ const Mines = () => {
       selectedPowerUp: selectedPowerUp
     });
 
-    socket.on('room_status_update', (roomData) => {
+    socket.on('room_settings_update', (roomData) => {
       setPlayersList(roomData.players || {});
       setRoundsCount(roomData.rounds);
 
@@ -114,6 +114,11 @@ const Mines = () => {
         if (myData.mines) setMinesCount(myData.mines);
         if (myData.nukes !== undefined) setNukeCount(myData.nukes);
       }
+    });
+
+    socket.on('room_status_update', (roomData) => {
+      setPlayersList(roomData.players || {});
+      setRoundsCount(roomData.rounds);
     });
 
     socket.on('start_game', ({ room }) => {
@@ -200,8 +205,7 @@ const Mines = () => {
     const targetRounds = settings?.rounds !== undefined ? settings.rounds : roundsCount;
 
     setNukeCount(targetNukes);
-    setMinesCount(targetMines);
-    
+
     const sanitizeData = (data, min) => {
       data = Number(data);
       return isNaN(data) || data < min ? min : Math.floor(data);
