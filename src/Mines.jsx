@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Bomb, RefreshCw, Gift, Heart, HeartCrack, Gem, Egg, EggFried, 
   Smile, Frown, Bone, ShieldPlus, FireExtinguisher, Flame, Ham, 
-  CircleArrowLeft, ArrowRight, Users, User, Radiation, Zap 
+  CircleArrowLeft, ArrowRight, Users, User, Radiation, Zap, IceCreamCone,
+  ShieldCheck, TriangleAlert, Cake
 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
 import { Link } from 'react-router-dom';
@@ -320,15 +321,24 @@ const Mines = () => {
         if (randomNum < 25) {
           setSafeIcon(() => Heart);
           setBombIcon(() => HeartCrack);
+          if(randomNum === 0){
+            setGiftIcon(() => Cake)
+          }
         } else {
           setSafeIcon(() => Gem);
           setBombIcon(() => Bomb);
+          if(randomNum === 32){
+            setGiftIcon(() => IceCreamCone)
+          }
         }
       } else {
         if (randomNum < 76) {
           if (randomNum > 50) {
             setSafeIcon(() => Smile);
             setBombIcon(() => Frown);
+            if(randomNum === 75){
+              setNukeIcon(() => TriangleAlert)
+            }
           } else {
             setSafeIcon(() => FireExtinguisher);
             setBombIcon(() => Flame);
@@ -340,6 +350,9 @@ const Mines = () => {
           } else {
             setSafeIcon(() => Ham);
             setBombIcon(() => Bone);
+            if(randomNum === 78){
+              setShieldIcon(() => ShieldCheck);
+            }
           }
         }
       }
