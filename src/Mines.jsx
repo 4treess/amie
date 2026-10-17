@@ -199,9 +199,10 @@ const Mines = () => {
     const targetNukes = settings?.nukes !== undefined ? settings.nukes : nukeCount;
     const targetRounds = settings?.rounds !== undefined ? settings.rounds : roundsCount;
 
-    setNukeCount(targetNukes);
-    setMinesCount(targetMines);
-
+    if(settings != null){
+      setNukeCount(targetNukes - (settings?.powerUp.type === "Nuke" ? settings.powerUp.value : 0));
+      setMinesCount(targetMines - (settings?.powerUp.type === "Extra Mines" ? settings.powerUp.value : 0));
+    }
     const sanitizeData = (data, min) => {
       data = Number(data);
       return isNaN(data) || data < min ? min : Math.floor(data);
