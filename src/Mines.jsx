@@ -531,7 +531,7 @@ const Mines = () => {
               playSafe();
               handleSafeCell(1);
             } else {
-              handleSafeCell(2.1);
+              handleSafeCell(5);
             }
           }
         }
