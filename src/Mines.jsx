@@ -502,7 +502,11 @@ const Mines = () => {
           if (board[rowIndex][colIndex].isGift) {
             handleSafeCell(giftMultiplier);
           } else {
-            handleSafeCell(1);
+            if(isUserClick){
+              handleSafeCell(1);
+            } else {
+              handleSafeCell(2.1);
+            }
           }
         }
       }
