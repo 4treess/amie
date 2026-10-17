@@ -9,6 +9,12 @@ const socket = io('https://amie-server-mdhz.onrender.com', {
   transports: ['websocket']
 });
 
+
+let shieldCount = 1;
+let pickaxeTriggerChance = 0;
+let minesLocatable = 0;
+let giftCount = 0;
+
 const Mines = () => {
   const [activeTab, setActiveTab] = useState('singleplayer');
   const [isJoined, setIsJoined] = useState(false);
@@ -20,10 +26,9 @@ const Mines = () => {
 
   const [SafeIcon, setSafeIcon] = useState(() => Gem)
   const [BombIcon, setBombIcon] = useState(() => Bomb)
-  const [minesLocatable, setMinesLocatable] = useState(0)
-  const [pickaxeTriggerChance, setPickaxeTriggerChance] = useState(0)
-  const [giftCount, setGiftCount] = useState(0)
-  const [shieldCount, setShieldCount] = useState(1)
+  const [NukeIcon, setNukeIcon] = useState(() => Radiation)
+  const [GiftIcon, setGiftIcon] = useState(() => Gift)
+  const [ShieldIcon, setShieldIcon] = useState(() => ShieldPlus)
   const [gameStatus, setGameStatus] = useState("Lobby")
   const [points, setPoints] = useState(0);
   const [clicks, setClicks] = useState(0);
@@ -155,10 +160,10 @@ const Mines = () => {
     const match = currentList.find((p) => p.type === selectedPowerUp.type) || selectedPowerUp;
 
     // Reset module power-up counters synchronously before board placement
-    setShieldCount(match.type === "Shield" ? match.value : 0);
-    setPickaxeTriggerChance(match.type === "Pickaxe" ? match.value : 0);
-    setMinesLocatable(match.type === "Mine Locator" ? match.value : 0);
-    setGiftCount(match.type === "Gift" ? match.value : 0);
+    shieldCount = match.type === "Shield" ? match.value : 0;
+    pickaxeTriggerChance = match.type === "Pickaxe" ? match.value : 0;
+    minesLocatable = match.type === "Mine Locator" ? match.value : 0;
+    giftCount = match.type === "Gift" ? match.value : 0;
   };
 
   const handleStartNewGame = (settings = null) => {
@@ -312,7 +317,7 @@ const Mines = () => {
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
     const handleMine = () => {
       if (shieldCount > 0) {
-        setShieldCount(shieldCount - 1);
+        shieldCount -= 1;
         board[rowIndex][colIndex].isShield = true;
         board[rowIndex][colIndex].isMine = false;
         setPoints(points + 1);
@@ -654,9 +659,9 @@ const Mines = () => {
                       }`}
                     >
                       {cell.visible ? (cell.isMine ? <BombIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
-                                      (cell.isNuke ? <Radiation size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
-                                      (cell.isGift ? <Gift size={20} className={gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-green-500"}/> : 
-                                      (cell.isShield ? <ShieldPlus size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isNuke ? <NukeIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
+                                      (cell.isGift ? <GiftIcon size={20} className={gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-green-500"}/> : 
+                                      (cell.isShield ? <ShieldIcon size={20} className={gameStatus === "Victory" ? "text-green-500" : "text-red-500"}/> : 
                                       <SafeIcon size={20} className={gameStatus === "Victory" ? "text-green-500": gameStatus === "Blown Up" || gameStatus === "Obliterated" ? "text-red-500" : "text-black-500"}/>)))) : '?'}
                     </button>
                   ))
