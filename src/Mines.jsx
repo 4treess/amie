@@ -784,7 +784,7 @@ const Mines = () => {
                           ? cell.isMine 
                             ? 'bg-rose-200 text-white' 
                             : cell.isShield 
-                              ? 'bg-emerald-200 text-green-500' 
+                              ? 'bg-emerald-400 text-green-500' 
                               : 'bg-white text-slate-600'
                           : 'bg-rose-300 hover:bg-rose-400 text-transparent'
                       }`}
