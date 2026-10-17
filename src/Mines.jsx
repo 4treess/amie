@@ -85,7 +85,7 @@ const Mines = () => {
     { 
       type: "Pickaxe", 
       value: 1, 
-      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click.` 
+      description: (val) => `Gives a ${val * 100}% chance to automatically reveal an extra safe tile on click. extra tiles are worth ${pickaxeScore}x points of normal tiles` 
     },
     { 
       type: "Mine Locator", 
@@ -100,7 +100,7 @@ const Mines = () => {
     { 
       type: "Nuke", 
       value: 1, 
-      description: (val) => `Adds ${val === 1 ? `a nuke tile` : `${val} nuke tiles`} to all opponents' boards that reduces their total points by 1/${nukePointPenality} if detonated. Shields cannot protect against a nuke.` 
+      description: (val) => `Adds ${val === 1 ? `a nuke tile` : `${val} nuke tiles`} to all opponents' boards that makes them get zero points that round if detonated. Shields cannot protect against a nuke.` 
     },
     { 
       type: "None", 
@@ -109,7 +109,7 @@ const Mines = () => {
     }
   ];
   const giftMultiplier = 10;
-  const nukePointPenality = 2;
+  const pickaxeScore = 1.1;
 
   // Board Icons & Game State
   const [SafeIcon, setSafeIcon] = useState(() => Gem);
@@ -505,7 +505,7 @@ const Mines = () => {
             len--;
           } else {
             handleCellClick(row, col, false);
-            return 0.75;
+            return pickaxeScore;
           }  
         }
       } return 0;
