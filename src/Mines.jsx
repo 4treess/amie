@@ -521,7 +521,7 @@ const Mines = () => {
         } else {
           if (pickaxeTriggerChance > 0 && isUserClick) {
             handlePickaxe(pickaxeTriggerChance);
-            // handleSafeCell(1);
+            handleSafeCell(1);
           }
           if (board[rowIndex][colIndex].isGift) {
             playGift();
@@ -530,8 +530,6 @@ const Mines = () => {
             if(isUserClick){
               playSafe();
               handleSafeCell(1);
-            } else {
-              handleSafeCell(5);
             }
           }
         }
