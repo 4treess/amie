@@ -621,12 +621,14 @@ const Mines = () => {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1">
-                    Equipped Power-Up
-                  </label>
-                  <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 text-right">
-                    Show Description
-                  </label>
+                  <div className='text-justify'>
+                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1">
+                      Equipped Power-Up
+                    </label>
+                    <label className="text-[10px] font-bold uppercase text-slate-400 inline-block mb-1 text-right">
+                      Show Description
+                    </label>
+                  </div>
                   <select
                     value={selectedPowerUp.type}
                     onChange={(e) => {
