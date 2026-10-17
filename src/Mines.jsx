@@ -159,6 +159,7 @@ const Mines = () => {
 
     if (match) {
       setSelectedPowerUp(match);
+      resetPowerUpUsages();
     } else {
       setSelectedPowerUp({ type: "None", value: 0 });
     }
