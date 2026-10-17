@@ -28,6 +28,13 @@ let minesLocatable = 0;
 let giftCount = 0;
 
 const Mines = () => {
+
+  const [playMine] = useSound(mineSfx);
+  const [playGift] = useSound(giftSfx);
+  const [playSafe] = useSound(safeSfx);
+  const [playNuke] = useSound(nukeSfx);
+  const [playShield] = useSound(shieldSfx);
+  
   // Navigation & Mode State
   const [activeTab, setActiveTab] = useState('singleplayer'); // 'singleplayer' | 'multiplayer'
   const [isJoined, setIsJoined] = useState(false);
@@ -415,11 +422,6 @@ const Mines = () => {
   };
 
   const handleCellClick = (rowIndex, colIndex, isUserClick = true) => {
-    const [playMine] = useSound(mineSfx);
-    const [playGift] = useSound(giftSfx);
-    const [playSafe] = useSound(safeSfx);
-    const [playNuke] = useSound(nukeSfx);
-    const [playShield] = useSound(shieldSfx);
 
     const handleMine = () => {
       if (shieldCount > 0) {
