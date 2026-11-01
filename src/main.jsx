@@ -2,8 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css' // Ensure this exists for your Tailwind or custom CSS
 import RelationshipTimeline from './RelationshipTimeline.jsx'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Mines from './Mines.jsx';
+import MatchingPairs from './MatchingPairs.jsx';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RelationshipTimeline />} />
         <Route path="/mines" element={<Mines />} />
+        <Route path="/matching-pairs" element={<MatchingPairs />} />
       </Routes>
     </BrowserRouter>
   );
