@@ -408,25 +408,46 @@ const MatchingPairs = () => {
 
   return (
     <div className="min-h-screen bg-rose-50 pb-12">
-      <nav className="sticky top-0 z-50 flex items-center justify-between bg-white px-6 py-4 shadow-sm">
-        <h1 className="flex items-center gap-2 font-serif text-xl font-bold text-rose-500">
-          <Heart size={20} className="fill-rose-400 text-rose-400" /> Amie + Trevor
+      <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <h1 className="text-rose-500 font-serif text-xl font-bold flex items-center gap-2">
+          <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
         </h1>
-        <div className="flex items-center gap-4 text-xs font-bold text-rose-500">
-          <Link className="hover:text-rose-700" to="/">Timeline</Link>
-          <Link className="hover:text-rose-700" to="/mines">Mines</Link>
-          <span className="border-b-2 border-rose-500 pb-1">Matching Pairs</span>
-        </div>
+        <Menu as="div" className="relative">
+          <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105 transition-all">🀄 Matching Pairs 🀄</MenuButton>
+          <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105 transition-all">
+            <MenuItem>
+              {({ active }) => (
+                <Link 
+                  to="/" 
+                  className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                >
+                  Relationship Timeline
+                </Link>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {({ active }) => (
+                <Link 
+                  to="/mines" 
+                  className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
+                >
+                  💣 Play Mines
+                </Link>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {({ active }) => (
+                <span className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}>
+                  Coming Soon on Future Amieverseries!
+                </span>
+              )}
+            </MenuItem>
+          </MenuItems>
+        </Menu>
       </nav>
 
       <main className="mx-auto mt-6 max-w-2xl rounded-3xl border border-rose-100 bg-white p-5 text-slate-700 shadow-xl sm:p-7">
-        <div className="mb-6 text-center">
-          <h2 className="flex items-center justify-center gap-2 font-serif text-3xl text-slate-800">
-            <Heart className="fill-rose-300 text-rose-500" size={27} /> Matching Pairs
-          </h2>
-          <p className="mt-1 text-xs text-slate-400">Find your pairs, collect hearts, and share the love.</p>
-        </div>
-
+        
         <div className="mb-6 flex gap-2 border-b border-rose-100">
           <button
             type="button"
@@ -446,6 +467,13 @@ const MatchingPairs = () => {
           >
             <Users size={16} /> Multiplayer
           </button>
+        </div>
+
+        <div className="mb-6 text-center">
+          <h2 className="flex items-center justify-center gap-2 font-serif text-3xl text-slate-800">
+            <Heart className="fill-rose-300 text-rose-500" size={27} /> Matching Pairs
+          </h2>
+          <p className="mt-1 text-xs text-slate-400">Find your pairs, collect hearts, and share the love.</p>
         </div>
 
         {message && (
