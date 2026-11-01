@@ -422,7 +422,7 @@ const MatchingPairs = () => {
                   to="/" 
                   className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
                 >
-                  Relationship Timeline
+                  🗓️ Relationship Timeline
                 </Link>
               )}
             </MenuItem>
@@ -447,7 +447,7 @@ const MatchingPairs = () => {
         </Menu>
       </nav>
 
-      <main className="mx-auto mt-6 max-w-2xl rounded-3xl border border-rose-100 bg-white p-5 text-slate-700 shadow-xl sm:p-7">
+      <main className="max-w-md mx-auto p-6 bg-white rounded-3xl shadow-xl border border-rose-100 font-sans text-slate-700 mt-6">
 
         <div className="mb-6 flex gap-2 border-b border-rose-100">
           <button
@@ -528,7 +528,7 @@ const MatchingPairs = () => {
             )}
 
             {gameStatus === 'Lobby' && (
-              <section className="mb-6 rounded-2xl border border-rose-100 bg-white">
+              <section className="mb-6 rounded-2xl bg-white">
                 <div className="grid grid-cols-2 gap-3 p-4">
                   <label className="text-[10px] font-bold uppercase text-slate-400">
                     Rows

@@ -569,7 +569,7 @@ const Mines = () => {
                   to="/" 
                   className={`block px-4 py-3 text-xs ${active ? 'bg-rose-50 text-rose-600' : 'text-slate-600'}`}
                 >
-                  Relationship Timeline
+                  🗓️ Relationship Timeline
                 </Link>
               )}
             </MenuItem>

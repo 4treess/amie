@@ -190,7 +190,7 @@ const fetchEvents = async () => {
           <Heart size={20} className="text-blue-400 fill-blue-400" /> Amie + Trevor <Heart size={20} className="text-green-400 fill-green-400" />
         </h1>
         <Menu as="div" className="relative">
-          <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">Timeline</MenuButton>
+          <MenuButton className="text-rose-500 border-b-2 border-rose-500 hover:scale-105">🗓️ Timeline 🗓️</MenuButton>
           <MenuItems className="absolute right-0 mt-2 w-48 bg-white border border-rose-100 shadow-xl rounded-xl overflow-hidden z-50 hover:scale-105">
             <MenuItem>
                 {({ active }) => (
