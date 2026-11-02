@@ -476,6 +476,18 @@ const MatchingPairs = () => {
             <Heart className="fill-rose-300 text-rose-500" size={27} /> Matching Pairs
           </h2>
           <p className="mt-1 text-xs text-slate-400">Help the icons find their partners!</p>
+          
+          {activeTab === 'multiplayer' && isJoined && (
+              <div className="text-center mb-6">
+                <div className="text-xs font-bold mt-1">
+                  <span><strong className='text-rose-500'>Room:</strong> {roomData?.roomID || roomID} | </span>
+                  <span><strong className='text-rose-500'>Player:</strong> {nickname}</span>
+                </div>
+                <div>
+                  <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
+                </div>
+              </div>
+            )}
         </div>
 
         {message && (
@@ -520,18 +532,6 @@ const MatchingPairs = () => {
           </form>
         ) : (
           <>
-            {activeTab === 'multiplayer' && isJoined && (
-
-              <div className="text-center mb-6">
-                <div className="text-xs font-bold text-rose-500 mt-1">
-                  <span><strong>Room:</strong> {roomData?.roomID || roomID}</span>
-                  <span><strong>Player:</strong> {nickname}</span>
-                </div>
-                <div>
-                  <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
-                </div>
-              </div>
-            )}
 
             {gameStatus === 'Lobby' && (
               <section className="mb-6 rounded-2xl bg-white">
