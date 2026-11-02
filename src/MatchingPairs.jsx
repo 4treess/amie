@@ -475,7 +475,7 @@ const MatchingPairs = () => {
           <h2 className="flex items-center justify-center gap-2 font-serif text-3xl text-slate-800">
             <Heart className="fill-rose-300 text-rose-500" size={27} /> Matching Pairs
           </h2>
-          <p className="mt-1 text-xs text-slate-400">Find your pairs, collect hearts, and share the love.</p>
+          <p className="mt-1 text-xs text-slate-400">Help the icons find their partners!</p>
         </div>
 
         {message && (
@@ -521,10 +521,15 @@ const MatchingPairs = () => {
         ) : (
           <>
             {activeTab === 'multiplayer' && isJoined && (
-              <div className="mb-5 flex items-center justify-between rounded-xl bg-rose-50 px-3 py-2 text-xs">
-                <span><strong>Room:</strong> {roomData?.roomID || roomID}</span>
-                <span><strong>Player:</strong> {nickname}</span>
-                <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
+              <div className="mb-5 flex items-center justify-between px-3 py-2 text-xs">
+                <div>
+                  <span><strong>Room:</strong> {roomData?.roomID || roomID}</span>
+                  <span><strong>Player:</strong> {nickname}</span>
+                  
+                </div>
+                <div>
+                  <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
+                </div>
               </div>
             )}
 
