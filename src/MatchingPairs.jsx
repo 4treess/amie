@@ -558,7 +558,7 @@ const MatchingPairs = () => {
                     <button
                       type="button"
                       onClick={() => setShowDescription((prev) => !prev)}
-                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none"
+                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none text-right"
                     >
                       {showDescription ? "Hide Description" : "Show Description"}
                     </button>
