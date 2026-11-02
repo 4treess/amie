@@ -521,11 +521,10 @@ const MatchingPairs = () => {
         ) : (
           <>
             {activeTab === 'multiplayer' && isJoined && (
-              <div className="mb-5 flex items-center justify-between px-3 py-2 text-xs">
+              <div className="mb-5 flex text-center justify-between px-3 py-2 text-xs">
                 <div>
                   <span><strong>Room:</strong> {roomData?.roomID || roomID}</span>
                   <span><strong>Player:</strong> {nickname}</span>
-                  
                 </div>
                 <div>
                   <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
