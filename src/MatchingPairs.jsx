@@ -123,6 +123,7 @@ const MatchingPairs = () => {
   const [isResolvingPair, setIsResolvingPair] = useState(false);
   const [showFinalResults, setShowFinalResults] = useState(false);
   const [message, setMessage] = useState('');
+  const [showDescription, setShowDescription] = useState(false);
 
   const boardRef = useRef([]);
   const selectedCardIDsRef = useRef([]);
@@ -554,6 +555,13 @@ const MatchingPairs = () => {
                   </label>
                   <label className="col-span-2 text-[10px] font-bold uppercase text-slate-400">
                     Equipped power-up
+                    <button
+                      type="button"
+                      onClick={() => setShowDescription((prev) => !prev)}
+                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none"
+                    >
+                      {showDescription ? "Hide Description" : "Show Description"}
+                    </button>
                     <select
                       value={selectedPowerUp.type}
                       onChange={(event) => setSelectedPowerUp(POWER_UPS.find((option) => option.type === event.target.value) || POWER_UPS[0])}
@@ -563,7 +571,17 @@ const MatchingPairs = () => {
                         <option key={powerUp.type} value={powerUp.type}>{powerUp.name}</option>
                       ))}
                     </select>
-                    <span className="mt-1 block font-normal normal-case text-slate-500">{selectedPowerUp.description}</span>
+                    {/* CONDITIONAL DESCRIPTION DISPLAY */}
+                    {showDescription && (
+                      <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs text-slate-600 animate-fadeIn">
+                        <span className="font-bold text-rose-500 block mb-0.5">
+                          {selectedPowerUp.type}
+                        </span>
+                        {typeof selectedPowerUp.description === 'function'
+                          ? selectedPowerUp.description(selectedPowerUp.value)
+                          : selectedPowerUp.description || "No description available."}
+                      </div>
+                    )}
                   </label>
                 </div>
                 {!validGrid && (
