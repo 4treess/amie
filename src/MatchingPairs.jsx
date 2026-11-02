@@ -558,7 +558,7 @@ const MatchingPairs = () => {
                     <button
                       type="button"
                       onClick={() => setShowDescription((prev) => !prev)}
-                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none"
+                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none text-right w-full"
                     >
                       {showDescription ? "Hide Description" : "Show Description"}
                     </button>
@@ -573,7 +573,7 @@ const MatchingPairs = () => {
                     </select>
                     {/* CONDITIONAL DESCRIPTION DISPLAY */}
                     {showDescription && (
-                      <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs text-slate-600 animate-fadeIn">
+                      <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs normal-case text-slate-600 font-light animate-fadeIn">
                         <span className="font-bold text-rose-500 block mb-0.5">
                           {selectedPowerUp.type}
                         </span>
