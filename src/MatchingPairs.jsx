@@ -530,7 +530,7 @@ const MatchingPairs = () => {
 
             {gameStatus === 'Lobby' && (
               <section className="mb-6 rounded-2xl bg-white">
-                <div className="grid grid-cols-2 gap-3 p-4">
+                <div className="grid grid-cols-2 gap-3 p-4 flex-wrap items-center justify-between text-sm">
                   <label className="text-[10px] font-bold uppercase text-slate-400">
                     Rows
                     <input
@@ -575,7 +575,7 @@ const MatchingPairs = () => {
                     {showDescription && (
                       <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs normal-case text-slate-600 font-light animate-fadeIn">
                         <span className="font-bold text-rose-500 block mb-0.5">
-                          {selectedPowerUp.type}
+                          {selectedPowerUp.name}
                         </span>
                         {typeof selectedPowerUp.description === 'function'
                           ? selectedPowerUp.description(selectedPowerUp.value)
