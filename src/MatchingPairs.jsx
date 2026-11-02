@@ -44,7 +44,7 @@ const POWER_UPS = [
   {
     type: 'score-multiplier',
     name: "Point Multiplier",
-    value: 2,
+    value: 1.25,
     description: (val) => `Earn ${val}x the points for every successful match.`
   }
 ];
