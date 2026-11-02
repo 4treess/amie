@@ -553,7 +553,7 @@ const MatchingPairs = () => {
                       className="mt-1 w-full rounded-xl bg-rose-50 p-2 text-center text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-300"
                     />
                   </label>
-                  <label className="col-span-2 text-[10px] font-bold uppercase text-slate-400">
+                  <label className="col-span-2 text-[10px] font-bold uppercase text-slate-400 flex flex-col gap-1">
                     Equipped power-up
                     <button
                       type="button"
