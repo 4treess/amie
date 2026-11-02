@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useSound from 'use-sound';
 import mineSfx from './assets/384113__microsoftsam__bang01.wav';
 import safeSfx from './assets/523425__andersmmg__ding-2.wav';
@@ -9,7 +9,7 @@ import victorySfx from './assets/619832__cogfirestudios__puzzle-game-victory-mel
 import { 
   Bomb, RefreshCw, Gift, Heart, HeartCrack, Gem, Egg, EggFried, 
   Smile, Frown, Bone, ShieldPlus, FireExtinguisher, Flame, Ham, 
-  CircleArrowLeft, ArrowRight, Users, User, Radiation, Zap, IceCreamCone,
+  CircleArrowLeft, ArrowRight, Users, User, Radiation, IceCreamCone,
   ShieldCheck, TriangleAlert, Cake
 } from 'lucide-react';
 import { Menu, MenuItem, MenuButton, MenuItems } from "@headlessui/react";
@@ -119,6 +119,7 @@ const Mines = () => {
   const [ShieldIcon, setShieldIcon] = useState(() => ShieldPlus);
   const [gameStatus, setGameStatus] = useState("Lobby");
   const [points, setPoints] = useState(0);
+  const roundStartPointsRef = useRef(0);
   const [clicks, setClicks] = useState(0);
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5);
@@ -133,6 +134,7 @@ const Mines = () => {
   const [RoomID, setRoomID] = useState("");
   const [nickname, setNickname] = useState("");
   const [playersList, setPlayersList] = useState({});
+  const [roomMessage, setRoomMessage] = useState("");
 
   // Persistent Player ID
   const [playerID] = useState(() => {
@@ -190,6 +192,9 @@ const Mines = () => {
 
     socket.on('start_game', ({ room }) => {
       const myData = room.players[playerID];
+      setPlayersList(room.players || {});
+      setPoints(0);
+      roundStartPointsRef.current = 0;
       if (myData) {
         setRows(myData.rows);
         setCols(myData.cols);
@@ -207,10 +212,14 @@ const Mines = () => {
     });
 
     return () => {
+      if (socket.connected) {
+        socket.emit('leaveGameRoom', { roomID: RoomID, playerID: playerID }, () => socket.disconnect());
+      } else {
+        socket.disconnect();
+      }
       socket.off('room_status_update');
       socket.off('start_game');
       socket.off('round_over');
-      socket.disconnect();
     };
   }, [isJoined, activeTab, RoomID, playerID, nickname]);
 
@@ -375,11 +384,12 @@ const Mines = () => {
 
     if (gameStatus === "Lobby") {
       setPoints(0);
-      socket.emit('resetPoints', { roomID: RoomID, playerID: playerID });
+      roundStartPointsRef.current = 0;
       setCurrentRound(1);
       setGameStatus("In Game");
       socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "In Game" });
     } else {
+      roundStartPointsRef.current = points;
       if (targetRounds > 0 && currentRound >= targetRounds) {
         setGameStatus("Lobby");
         socket.emit('statusUpdate', { roomID: RoomID, playerID: playerID, status: "Lobby" });
@@ -453,7 +463,7 @@ const Mines = () => {
       setGameStatus("Obliterated");
       revealBoard();
 
-      const newPoints = (0);
+      const newPoints = roundStartPointsRef.current;
       setPoints(newPoints);
 
       if (activeTab === 'multiplayer' && isJoined) {
@@ -543,14 +553,18 @@ const Mines = () => {
   const handleJoinMultiplayer = (e) => {
     e.preventDefault();
     if (!RoomID.trim() || !nickname.trim()) return;
+    setRoomMessage("");
     setIsJoined(true);
     setGameStatus("Lobby");
   };
 
   const handleLeaveMultiplayer = () => {
-    socket.disconnect();
     setIsJoined(false);
     setGameStatus("Lobby");
+    setPlayersList({});
+    setPoints(0);
+    setBoard([]);
+    setRoomMessage("");
   };
 
   return (
@@ -667,11 +681,26 @@ const Mines = () => {
               </h2>
               <p className="text-xs text-slate-400 mt-1">Configure your board and test your luck!</p>
               {activeTab === 'multiplayer' && (
-                <p className="text-xs font-bold text-rose-500 mt-1">
-                  Room: {RoomID} | Player: {nickname}
-                </p>
+                <div className="mt-1 text-xs font-bold text-rose-500">
+                  <p>Room: {RoomID} | Player: {nickname}</p>
+                  {isJoined && (
+                    <button
+                      type="button"
+                      onClick={handleLeaveMultiplayer}
+                      className="mt-1 font-bold text-rose-500 hover:text-rose-700"
+                    >
+                      Leave Room
+                    </button>
+                  )}
+                </div>
               )}
             </div>
+
+            {roomMessage && (
+              <p role="alert" className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                {roomMessage}
+              </p>
+            )}
 
             {/* INPUT CONTROLS GRID */}
             {gameStatus === "Lobby" && (
@@ -788,12 +817,19 @@ const Mines = () => {
             <button 
               onClick={() => {
                 if (activeTab === 'multiplayer' && gameStatus === "Lobby") {
-                  socket.emit("startGame", { roomID: RoomID });
+                  socket.emit("startGame", { roomID: RoomID, playerID: playerID }, (response) => {
+                    if (response?.ok === false) setRoomMessage(response.error || "Could not start the game.");
+                    else setRoomMessage("");
+                  });
                 } else {
                   handleStartNewGame();
                 }
               }}
-              className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105"
+              disabled={activeTab === 'multiplayer' && gameStatus === "Lobby" && (
+                Object.keys(playersList).length === 0 ||
+                Object.values(playersList).some((player) => player.status !== "Lobby")
+              )}
+              className="w-full py-3 bg-rose-400 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:bg-rose-500 transition-all flex items-center justify-center gap-2 mb-6 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               {roundsCount > 0 && roundsCount >= currentRound && gameStatus !== "Lobby" ? (
                 <span className="flex items-center gap-1.5"> Next Round <ArrowRight size={18}/> </span>
@@ -801,6 +837,12 @@ const Mines = () => {
                 <span className='flex items-center gap-1.5'> New Game <RefreshCw size={18} /> </span>
               )}
             </button>
+            {activeTab === 'multiplayer' && gameStatus === "Lobby" &&
+              Object.values(playersList).some((player) => player.status !== "Lobby") && (
+                <p className="-mt-4 mb-6 text-center text-xs text-slate-400">
+                  Waiting for all players to return to the lobby before starting a new game.
+                </p>
+              )}
 
             {/* BOARD GRID DISPLAY */}
             <div className="flex justify-center mb-6">
@@ -864,11 +906,6 @@ const Mines = () => {
                             <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-rose-100 text-rose-600">
                               {player.status || 'Lobby'}
                             </span>
-                            {player.powerUp?.type && player.powerUp?.type !== "None" && gameStatus !== "Lobby" && player.status !== "Lobby" && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 flex items-center gap-1">
-                                <Zap size={10} /> {player.powerUp.type}
-                              </span>
-                            )}
                           </div>
                           <div className="font-bold text-rose-500">
                             {Math.round((player.score || 0) * 100) / 100} pts
@@ -876,6 +913,11 @@ const Mines = () => {
                         </div>
                       ))}
                   </div>
+                  {playersList[playerID]?.powerUp?.type && (
+                    <p className="mt-3 text-slate-400">
+                      Your power-up: {playersList[playerID].powerUp.type}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-slate-600 font-medium">
