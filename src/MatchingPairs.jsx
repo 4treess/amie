@@ -553,15 +553,20 @@ const MatchingPairs = () => {
                       className="mt-1 w-full rounded-xl bg-rose-50 p-2 text-center text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-300"
                     />
                   </label>
-                  <label className="col-span-2 text-[10px] font-bold uppercase text-slate-400 flex flex-col gap-1">
-                    Equipped power-up
-                    <button
-                      type="button"
-                      onClick={() => setShowDescription((prev) => !prev)}
-                      className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none text-right"
-                    >
-                      {showDescription ? "Hide Description" : "Show Description"}
-                    </button>
+                  <div className="col-span-2 flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">
+                        Equipped power-up
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowDescription((prev) => !prev)}
+                        className="text-[10px] font-bold uppercase text-rose-500 hover:text-rose-600 transition-colors cursor-pointer outline-none"
+                      >
+                        {showDescription ? "Hide Description" : "Show Description"}
+                      </button>
+                    </div>
+
                     <select
                       value={selectedPowerUp.type}
                       onChange={(event) => setSelectedPowerUp(POWER_UPS.find((option) => option.type === event.target.value) || POWER_UPS[0])}
@@ -571,7 +576,7 @@ const MatchingPairs = () => {
                         <option key={powerUp.type} value={powerUp.type}>{powerUp.name}</option>
                       ))}
                     </select>
-                    {/* CONDITIONAL DESCRIPTION DISPLAY */}
+
                     {showDescription && (
                       <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-100 rounded-xl text-xs normal-case text-slate-600 font-light animate-fadeIn">
                         <span className="font-bold text-rose-500 block mb-0.5">
@@ -582,8 +587,8 @@ const MatchingPairs = () => {
                           : selectedPowerUp.description || "No description available."}
                       </div>
                     )}
-                  </label>
-                </div>
+                  </div>
+                                  </div>
                 {!validGrid && (
                   <p className="border-t border-rose-100 px-4 py-3 text-xs font-semibold text-rose-600">
                     Matching pairs need an even number of cards. Change a row or column so rows × columns is even.
