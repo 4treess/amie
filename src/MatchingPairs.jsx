@@ -33,19 +33,19 @@ const POWER_UPS = [
     type: 'none',
     name: 'None',
     value: 0,
-    description: 'Play with the full variety of available icons and the standard score.'
+    description:'No power ups selected.'
   },
   {
     type: 'icon-variety',
-    name: 'Heart Collector',
+    name: 'Less Icons',
     value: -2,
-    description: 'Use two fewer distinct icons on your board, with more pairs of each icon.'
+    description: (val) => `Use ${val * -1} fewer distinct icons on your board, with more pairs of each icon.`
   },
   {
     type: 'score-multiplier',
-    name: "Cupid's Favor",
+    name: "Point Multiplier",
     value: 2,
-    description: 'Double the points you earn for every successful match.'
+    description: (val) => `Earn ${val}x the points for every successful match.`
   }
 ];
 
