@@ -484,7 +484,7 @@ const MatchingPairs = () => {
                   <span><strong className='text-rose-500'>&emsp;Player:</strong> {nickname}</span>
                 </div>
                 <div>
-                  <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave</button>
+                  <button type="button" onClick={leaveRoom} className="font-bold text-rose-500 hover:text-rose-700">Leave Room</button>
                 </div>
               </div>
             )}
