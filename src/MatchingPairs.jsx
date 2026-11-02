@@ -521,8 +521,9 @@ const MatchingPairs = () => {
         ) : (
           <>
             {activeTab === 'multiplayer' && isJoined && (
-              <div className="col-span-1 flex flex-col gap-1">
-                <div className="flex items-center justify-between">
+
+              <div className="text-center mb-6">
+                <div className="text-xs font-bold text-rose-500 mt-1">
                   <span><strong>Room:</strong> {roomData?.roomID || roomID}</span>
                   <span><strong>Player:</strong> {nickname}</span>
                 </div>
