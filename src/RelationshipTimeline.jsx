@@ -28,7 +28,7 @@ const RelationshipTimeline = () => {
 const fetchEvents = async () => {
   setIsLoading(true);
   try {
-    const response = await get(`https://amie-server-mdhz.onrender.com/api/events/${sortOrder}`);
+    const response = await fetch(`https://amie-server-mdhz.onrender.com/api/events/${sortOrder}`);
     
     if (!response.ok) {
       const text = await response.text(); 
