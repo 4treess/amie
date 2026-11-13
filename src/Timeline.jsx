@@ -25,7 +25,7 @@ const RelationshipTimeline = () => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://your-api-endpoint.com/api/events', {
+      const response = await fetch('https://https://amie-server-mdhz.onrender.com/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEvent),
